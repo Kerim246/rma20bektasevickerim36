@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Spirala1</string>
+    <string-array name="opcijeSortiranja">
+        <item>Sort by</item>
+        <item>Price - Ascending</item>
+        <item>Price - Descending</item>
+        <item>Title - Ascending</item>
+        <item>Title - Descending</item>
+        <item>Date - Ascending</item>
+        <item>Date - Descending</item>
+    </string-array>
+    <string-array name="opcijeFiltriranja">
+        <item>Filter by</item>
+        <item>INDIVIDUALPAYMENT</item>
+        <item>REGULARPAYMENT</item>
+        <item>PURCHASE</item>
+        <item>INDIVIDUALINCOME</item>
+        <item>REGULARINCOME</item>
+        <item>SVITIPOVI</item>
+    </string-array>
+</resources>
