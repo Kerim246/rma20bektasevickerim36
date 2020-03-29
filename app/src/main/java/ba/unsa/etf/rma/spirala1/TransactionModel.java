@@ -20,7 +20,7 @@ public final class TransactionModel {
         transactions.add(new Transaction(LocalDate.of(2020,3,8),70,"Druga",REGULARPAYMENT,"Ma hajte molim vas",10,LocalDate.of(2020,11,10)));
         transactions.add(new Transaction(LocalDate.of(2020,4,16),40,"Treca",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,5,11),30,"Cetvrta",PURCHASE,"Ne Znam sta da kazem",0,null));
-        transactions.add(new Transaction(LocalDate.of(2020,3,12),250,"Peta",REGULARINCOME,null,10,LocalDate.of(2020,10,10)));
+        transactions.add(new Transaction(LocalDate.of(2020,2,12),250,"Peta",REGULARINCOME,null,10,LocalDate.of(2020,10,10)));
         transactions.add(new Transaction(LocalDate.of(2020,4,9),350,"Sesta",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,3,8),20,"Sedma",REGULARPAYMENT,"Ne Znam sta da kazem",10,LocalDate.of(2020,9,10)));
         transactions.add(new Transaction(LocalDate.of(2020,6,7),30,"Osma",PURCHASE,"Ne Znam sta da kazem",0,null));

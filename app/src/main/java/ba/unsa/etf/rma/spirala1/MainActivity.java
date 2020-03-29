@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.spirala1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -345,7 +346,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         adapter1 = new TransactionListAdapter(this, R.layout.list_item, finalna);
+
+
+
+
+        View.OnClickListener listItemListener;
+      //  listview.setOnItemClickListener(listItemClickListener);
+
+
+
     }
+
+    private AdapterView.OnItemClickListener listItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent TransactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
+            Transaction transakcija = adapter1.getItem(position);
+            TransactionDetailIntent.putExtra("date", transakcija.getDate());
+            TransactionDetailIntent.putExtra("amount", transakcija.getAmount());
+            TransactionDetailIntent.putExtra("title", transakcija.getTitle());
+            TransactionDetailIntent.putExtra("type", transakcija.getType());
+            TransactionDetailIntent.putExtra("itemDescription", transakcija.getItemDescription());
+            TransactionDetailIntent.putExtra("transactionInterval", transakcija.getTransactionInterval());
+            TransactionDetailIntent.putExtra("endDate", transakcija.getEndDate());
+            MainActivity.this.startActivity(TransactionDetailIntent);
+        }
+    };
+
 
     public void PopuniListu(ArrayList<Transaction> finalna) {
         spinnerFilterBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -357,10 +384,9 @@ public class MainActivity extends AppCompatActivity {
                 int mjesec = Month.valueOf(mjesecIGodina[0].toUpperCase()).getValue();
                 int godina = Integer.parseInt(mjesecIGodina[1]);
                 int month = 0;
-                transakcije.clear();
-                transakcije = TransactionModel.getTransactions();
                 finalna.clear();
                 if (position == 0) {
+                    transakcije = TransactionModel.getTransactions();
                     int i;
                     for (i = 0; i < transakcije.size(); i++) {
                         if (transakcije.get(i).getDate().getMonth().getValue() == mjesec && (transakcije.get(i).getDate().getYear() == godina))
