@@ -119,74 +119,10 @@ public class MainActivity extends AppCompatActivity {
                 datumMjesec.setText(rez);
 
                 String opcija = spinnerFilterBy.getSelectedItem().toString();
-                transakcije = TransactionModel.getTransactions();
+                String opcijaSortiranja = spinnerSortBy.getSelectedItem().toString();
                 finalna.clear();
-                if(opcija.equals("Filter by")){
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                }
-                else if(opcija.equals("INDIVIDUALPAYMENT")){
-                    int i;
-
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(INDIVIDUALPAYMENT) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                }
-                else if (opcija.equals("REGULARPAYMENT")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                    && (transakcije.get(i).getDate().getYear() == year)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    }
-                } else if (opcija.equals("PURCHASE")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(PURCHASE) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                } else if (opcija.equals("INDIVIDUALINCOME")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(INDIVIDUALINCOME) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                } else if (opcija.equals("REGULARINCOME")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                    && (transakcije.get(i).getDate().getYear() == year)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    }
-                } else if (opcija.equals("SVITIPOVI")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                }
+                PopuniListu(finalna,opcija);
+                SortirajListu(finalna,opcijaSortiranja);
                 adapter1.notifyDataSetChanged();
                 listview.setAdapter(adapter1);
 
@@ -223,75 +159,10 @@ public class MainActivity extends AppCompatActivity {
 
                 String opcija = spinnerFilterBy.getSelectedItem().toString();
 
-                transakcije = TransactionModel.getTransactions();
                 finalna.clear();
-                if(opcija.equals("Filter by")){
-                    int i;
-
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                }
-                else if(opcija.equals("INDIVIDUALPAYMENT")){
-                    int i;
-
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(INDIVIDUALPAYMENT) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                }
-                else if (opcija.equals("REGULARPAYMENT")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                    && (transakcije.get(i).getDate().getYear() == year)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    }
-                } else if (opcija.equals("PURCHASE")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(PURCHASE) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                } else if (opcija.equals("INDIVIDUALINCOME")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(INDIVIDUALINCOME) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                } else if (opcija.equals("REGULARINCOME")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                    && (transakcije.get(i).getDate().getYear() == year)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    }
-                } else if (opcija.equals("SVITIPOVI")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == year)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                }
+                PopuniListu(finalna,opcija);
+                String opcijaSortiranja = spinnerSortBy.getSelectedItem().toString();
+                SortirajListu(finalna,opcijaSortiranja);
                 adapter1.notifyDataSetChanged();
                 listview.setAdapter(adapter1);
 
@@ -307,7 +178,21 @@ public class MainActivity extends AppCompatActivity {
 
         spinnerFilterBy.setAdapter(filterAdapter);
 
-        PopuniListu(finalna);
+
+        spinnerFilterBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String opcija = parent.getItemAtPosition(position).toString(); // position == 0 -> filter by,position == 1->individualpayment
+                Toast.makeText(getApplicationContext(), "Selektovano : " + opcija, Toast.LENGTH_SHORT).show();
+                PopuniListu(finalna,opcija);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
 
 
@@ -321,19 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     //      transakcije.clear();
                     Toast.makeText(getApplicationContext(), "Selektovano : " + item, Toast.LENGTH_SHORT).show();
 
-                    if (item.equals("Price - Ascending")) {
-                        Collections.sort(finalna, new SortByAmountASC());
-                    } else if (item.equals("Price - Descending")) {
-                        Collections.sort(finalna, new SortByAmountDESC());
-                    } else if (item.equals("Title - Ascending")) {
-                        Collections.sort(finalna, new SortByTitleASC());
-                    } else if (item.equals("Title - Descending")) {
-                        Collections.sort(finalna, new SortByTitleDESC());
-                    } else if (item.equals("Date - Ascending")) {
-                        Collections.sort(finalna, new SortByDateASC());
-                    } else if (item.equals("Date - Descending")) {
-                        Collections.sort(finalna, new SortByDateDESC());
-                    }
+                   SortirajListu(finalna,item);
                     adapter1.notifyDataSetChanged();
                     listview.setAdapter(adapter1);
                 }
@@ -351,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         View.OnClickListener listItemListener;
-      //  listview.setOnItemClickListener(listItemClickListener);
+        listview.setOnItemClickListener(listItemClickListener);
 
 
 
@@ -374,10 +247,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    public void PopuniListu(ArrayList<Transaction> finalna) {
-        spinnerFilterBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void PopuniListu(ArrayList<Transaction> finalna,String opcija) {
+
                 String datum = datumMjesec.getText().toString();
                 String[] mjesecIGodina = datum.split(",");
 
@@ -385,90 +256,97 @@ public class MainActivity extends AppCompatActivity {
                 int godina = Integer.parseInt(mjesecIGodina[1]);
                 int month = 0;
                 finalna.clear();
-                if (position == 0) {
+                if(opcija.equals("Filter by")){   // position == 0
+                    int i;
                     transakcije = TransactionModel.getTransactions();
+                    for (i = 0; i < transakcije.size(); i++) {
+                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                                && (transakcije.get(i).getDate().getYear() == godina)) {
+                            finalna.add(transakcije.get(i));
+                        }
+                    }
+                }
+                else if(opcija.equals("INDIVIDUALPAYMENT")){      // position == 1
+                    int i;
+
+                    for (i = 0; i < transakcije.size(); i++) {
+                        if (transakcije.get(i).getType().equals(INDIVIDUALPAYMENT) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                                && (transakcije.get(i).getDate().getYear() == godina)) {
+                            finalna.add(transakcije.get(i));
+                        }
+                    }
+                }
+                else if (opcija.equals("REGULARPAYMENT")) {   // position == 2 itd...
                     int i;
                     for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getDate().getMonth().getValue() == mjesec && (transakcije.get(i).getDate().getYear() == godina))
+                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
+                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
+                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
+                                    && (transakcije.get(i).getDate().getYear() == godina)) {
+                                finalna.add(transakcije.get(i));
+                            }
+                        }
+                    }
+                } else if (opcija.equals("PURCHASE")) {
+                    int i;
+                    for (i = 0; i < transakcije.size(); i++) {
+                        if (transakcije.get(i).getType().equals(PURCHASE) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                                && (transakcije.get(i).getDate().getYear() == godina)) {
                             finalna.add(transakcije.get(i));
+                        }
                     }
-                } else {
-                    FilterItem fItem = (FilterItem) parent.getItemAtPosition(position);
-                    String klikovan = fItem.getFilterItem();
-
-                    Toast.makeText(getApplicationContext(), "Selektovano : " + klikovan, Toast.LENGTH_SHORT).show();
-                    ArrayList<Transaction> transakcije = TransactionModel.getTransactions();
-
-                    if (position == 1) {
-                        int i;
-
-                        for (i = 0; i < transakcije.size(); i++) {
-                            if (transakcije.get(i).getType().equals(INDIVIDUALPAYMENT) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                    && (transakcije.get(i).getDate().getYear() == godina)) {
-                                finalna.add(transakcije.get(i));
-                            }
+                } else if (opcija.equals("INDIVIDUALINCOME")) {
+                    int i;
+                    for (i = 0; i < transakcije.size(); i++) {
+                        if (transakcije.get(i).getType().equals(INDIVIDUALINCOME) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                                && (transakcije.get(i).getDate().getYear() == godina)) {
+                            finalna.add(transakcije.get(i));
                         }
-                    } else if (position == 2) {
-                        int i;
-                        for (i = 0; i < transakcije.size(); i++) {
-                            if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                                int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                                if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                        && (transakcije.get(i).getDate().getYear() == godina)) {
-                                    finalna.add(transakcije.get(i));
-                                }
-                            }
-                        }
-                    } else if (position == 3) {
-                        int i;
-                        for (i = 0; i < transakcije.size(); i++) {
-                            if (transakcije.get(i).getType().equals(PURCHASE) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                    && (transakcije.get(i).getDate().getYear() == godina)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    } else if (position == 4) {
-                        int i;
-                        for (i = 0; i < transakcije.size(); i++) {
-                            if (transakcije.get(i).getType().equals(INDIVIDUALINCOME) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                    && (transakcije.get(i).getDate().getYear() == godina)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    } else if (position == 5) {
-                        int i;
-                        for (i = 0; i < transakcije.size(); i++) {
-                            if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                                int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                                if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                        && (transakcije.get(i).getDate().getYear() == godina)) {
-                                    finalna.add(transakcije.get(i));
-                                }
-                            }
-                        }
-                    } else if (position == 6) {
-                        int i;
-                        for (i = 0; i < transakcije.size(); i++) {
-                            if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                    }
+                } else if (opcija.equals("REGULARINCOME")) {
+                    int i;
+                    for (i = 0; i < transakcije.size(); i++) {
+                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
+                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
+                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
                                     && (transakcije.get(i).getDate().getYear() == godina)) {
                                 finalna.add(transakcije.get(i));
                             }
                         }
                     }
-                    adapter1.notifyDataSetChanged();
+                } else if (opcija.equals("SVITIPOVI")) {
+                    int i;
+                    for (i = 0; i < transakcije.size(); i++) {
+                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                                && (transakcije.get(i).getDate().getYear() == godina)) {
+                            finalna.add(transakcije.get(i));
+                        }
+                    }
                 }
+                    adapter1.notifyDataSetChanged();
+
                 listview.setAdapter(adapter1);
+    }
 
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+    public void SortirajListu(ArrayList<Transaction> finalna,String opcija){
+        if (opcija.equals("Price - Ascending")) {
+            Collections.sort(finalna, new SortByAmountASC());
+        } else if (opcija.equals("Price - Descending")) {
+            Collections.sort(finalna, new SortByAmountDESC());
+        } else if (opcija.equals("Title - Ascending")) {
+            Collections.sort(finalna, new SortByTitleASC());
+        } else if (opcija.equals("Title - Descending")) {
+            Collections.sort(finalna, new SortByTitleDESC());
+        } else if (opcija.equals("Date - Ascending")) {
+            Collections.sort(finalna, new SortByDateASC());
+        } else if (opcija.equals("Date - Descending")) {
+            Collections.sort(finalna, new SortByDateDESC());
+        }
+        adapter1.notifyDataSetChanged();
+        listview.setAdapter(adapter1);
 
     }
+
 
     private void initList(){
         filterItemi = new ArrayList<>();

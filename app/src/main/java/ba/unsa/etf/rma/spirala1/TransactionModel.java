@@ -16,7 +16,7 @@ public final class TransactionModel {
     private static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
     static {
-        transactions.add(new Transaction(LocalDate.of(2020,3,10),150,"Prva",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
+        transactions.add(new Transaction(LocalDate.of(2020,3,12),150,"Prva",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,3,8),70,"Druga",REGULARPAYMENT,"Ma hajte molim vas",10,LocalDate.of(2020,11,10)));
         transactions.add(new Transaction(LocalDate.of(2020,4,16),40,"Treca",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,5,11),30,"Cetvrta",PURCHASE,"Ne Znam sta da kazem",0,null));

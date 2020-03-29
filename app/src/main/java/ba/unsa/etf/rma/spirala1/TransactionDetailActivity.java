@@ -16,6 +16,8 @@ public class TransactionDetailActivity extends AppCompatActivity {
     public TextView transactionInterval;
     public TextView endDate;
 
+    public Transaction transaction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
