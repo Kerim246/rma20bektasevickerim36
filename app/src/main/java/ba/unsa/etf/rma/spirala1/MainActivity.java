@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     public Button AddTransaction;
     private ArrayList<FilterItem> filterItemi;
 
-    int prviPut = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,17 +263,24 @@ public class MainActivity extends AppCompatActivity {
         int godina = Integer.parseInt(mjesecIGodina[1]);
         int month = 0;
         finalna.clear();
-        if(opcija.equals("Filter by")){   // position == 0
+        if(opcija.equals("Filter by")) {   // position == 0
             int i;
             transakcije = TransactionModel.getTransactions();
             for (i = 0; i < transakcije.size(); i++) {
                 if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)   // Znaci pocetna lista je lista svih tipova za trenutni mjesec i godinu
-                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                        && (transakcije.get(i).getDate().getYear() == godina) && !(transakcije.get(i).getType().toString().equals("REGULARPAYMENT") || transakcije.get(i).getType().toString().equals("REGULARINCOME")))
                     finalna.add(transakcije.get(i));
+
+                        if(transakcije.get(i).getType().toString().equals("REGULARINCOME") || transakcije.get(i).getType().toString().equals("REGULARPAYMENT")){
+                    int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
+                    if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)   // Za regular transakcije
+                            && (transakcije.get(i).getDate().getYear() == godina)) {
+                        finalna.add(transakcije.get(i));
+                    }
+                    }
                 }
-            }
-        }
-        else if(opcija.equals("INDIVIDUALPAYMENT")){      // position == 1
+
+        }  else if(opcija.equals("INDIVIDUALPAYMENT")){      // position == 1
             int i;
 
             for (i = 0; i < transakcije.size(); i++) {
@@ -325,9 +331,16 @@ public class MainActivity extends AppCompatActivity {
         } else if (opcija.equals("SVITIPOVI")) {                             // Napravio sam jos jednu opciju za sve tipove. Ovo je ekvivalentno opciji "Filter by",al sam napravio jos jednu formalno
             int i;
             for (i = 0; i < transakcije.size(); i++) {
-                if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)   // Znaci pocetna lista je lista svih tipova za trenutni mjesec i godinu
+                        && (transakcije.get(i).getDate().getYear() == godina) && !(transakcije.get(i).getType().toString().equals("REGULARPAYMENT") || transakcije.get(i).getType().toString().equals("REGULARINCOME")))
                     finalna.add(transakcije.get(i));
+
+                if(transakcije.get(i).getType().toString().equals("REGULARINCOME") || transakcije.get(i).getType().toString().equals("REGULARPAYMENT")){
+                    int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
+                    if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)   // Za regular transakcije
+                            && (transakcije.get(i).getDate().getYear() == godina)) {
+                        finalna.add(transakcije.get(i));
+                    }
                 }
             }
         }

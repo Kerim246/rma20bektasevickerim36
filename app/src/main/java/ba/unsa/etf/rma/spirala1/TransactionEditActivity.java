@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 
+import static ba.unsa.etf.rma.spirala1.Account.totalLimit;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALINCOME;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARINCOME;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARPAYMENT;
@@ -147,15 +148,21 @@ public class TransactionEditActivity extends AppCompatActivity {
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
-                else if(Integer.parseInt(vrijednost) > money){
+                else if(Integer.parseInt(vrijednost) > money && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME")))){
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
                     builder1.setMessage("Nemate dovoljno novca!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
-                else if(Integer.parseInt(vrijednost) > limit){
+                else if(Integer.parseInt(vrijednost) > limit && Integer.parseInt(vrijednost) < totalLimit){
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
                     builder1.setMessage("Suma novca koju ste unijeli prelazi vas mjesecni limit!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if(Integer.parseInt(vrijednost) > limit && Integer.parseInt(vrijednost) > totalLimit){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Suma novca koju ste unijeli prelazi vas totalni i mjesecni limit!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
