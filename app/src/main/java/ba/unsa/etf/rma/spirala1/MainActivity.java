@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.spirala1;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -25,6 +26,7 @@ import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALINCOME;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALPAYMENT;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.PURCHASE;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARINCOME;
+import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARPAYMENT;
 
 public class MainActivity extends AppCompatActivity {
     private TextView datumMjesec;
@@ -42,9 +44,14 @@ public class MainActivity extends AppCompatActivity {
     public Button AddTransaction;
     private ArrayList<FilterItem> filterItemi;
     public Account akaunt = new Account(10000,5000,1000);
+    int prviPut = 0;
 
     public Account getAkaunt(){
         return akaunt;
+    }
+
+    public void setAkaunt(Account akaunt){
+        this.akaunt = akaunt;
     }
 
     @Override
@@ -202,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     //      transakcije.clear();
                     Toast.makeText(getApplicationContext(), "Selektovano : " + item, Toast.LENGTH_SHORT).show();
 
-                   SortirajListu(finalna,item);
+                    SortirajListu(finalna,item);
                     adapter1.notifyDataSetChanged();
                     listview.setAdapter(adapter1);
                 }
@@ -248,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             TransactionDetailIntent.putExtra("itemDescription", transakcija.getItemDescription());
             TransactionDetailIntent.putExtra("transactionInterval", Integer.toString(transakcija.getTransactionInterval()));
             if(transakcija.getEndDate() != null)
-            TransactionDetailIntent.putExtra("endDate", transakcija.getEndDate().toString());
+                TransactionDetailIntent.putExtra("endDate", transakcija.getEndDate().toString());
             MainActivity.this.startActivity(TransactionDetailIntent);
 
 
@@ -258,83 +265,83 @@ public class MainActivity extends AppCompatActivity {
 
     public void PopuniListu(ArrayList<Transaction> finalna,String opcija) {
 
-                String datum = datumMjesec.getText().toString();
-                String[] mjesecIGodina = datum.split(",");
+        String datum = datumMjesec.getText().toString();
+        String[] mjesecIGodina = datum.split(",");
 
-                int mjesec = Month.valueOf(mjesecIGodina[0].toUpperCase()).getValue();
-                int godina = Integer.parseInt(mjesecIGodina[1]);
-                int month = 0;
-                finalna.clear();
-                if(opcija.equals("Filter by")){   // position == 0
-                    int i;
-                    transakcije = TransactionModel.getTransactions();
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)   // Znaci pocetna lista je lista svih tipova za trenutni mjesec i godinu
-                                && (transakcije.get(i).getDate().getYear() == godina)) {
-                            finalna.add(transakcije.get(i));
-                        }
+        int mjesec = Month.valueOf(mjesecIGodina[0].toUpperCase()).getValue();
+        int godina = Integer.parseInt(mjesecIGodina[1]);
+        int month = 0;
+        finalna.clear();
+        if(opcija.equals("Filter by")){   // position == 0
+            int i;
+            transakcije = TransactionModel.getTransactions();
+            for (i = 0; i < transakcije.size(); i++) {
+                if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)   // Znaci pocetna lista je lista svih tipova za trenutni mjesec i godinu
+                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                    finalna.add(transakcije.get(i));
+                }
+            }
+        }
+        else if(opcija.equals("INDIVIDUALPAYMENT")){      // position == 1
+            int i;
+
+            for (i = 0; i < transakcije.size(); i++) {
+                if (transakcije.get(i).getType().equals(INDIVIDUALPAYMENT) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                    finalna.add(transakcije.get(i));
+                }
+            }
+        }
+        else if (opcija.equals("REGULARPAYMENT")) {   // position == 2 itd...
+            int i;
+            for (i = 0; i < transakcije.size(); i++) {
+                if (transakcije.get(i).getType().equals(REGULARPAYMENT)) {
+                    int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
+                    if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
+                            && (transakcije.get(i).getDate().getYear() == godina)) {
+                        finalna.add(transakcije.get(i));
                     }
                 }
-                else if(opcija.equals("INDIVIDUALPAYMENT")){      // position == 1
-                    int i;
-
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(INDIVIDUALPAYMENT) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == godina)) {
-                            finalna.add(transakcije.get(i));
-                        }
+            }
+        } else if (opcija.equals("PURCHASE")) {
+            int i;
+            for (i = 0; i < transakcije.size(); i++) {
+                if (transakcije.get(i).getType().equals(PURCHASE) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                    finalna.add(transakcije.get(i));
+                }
+            }
+        } else if (opcija.equals("INDIVIDUALINCOME")) {
+            int i;
+            for (i = 0; i < transakcije.size(); i++) {
+                if (transakcije.get(i).getType().equals(INDIVIDUALINCOME) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                    finalna.add(transakcije.get(i));
+                }
+            }
+        } else if (opcija.equals("REGULARINCOME")) {
+            int i;
+            for (i = 0; i < transakcije.size(); i++) {
+                if (transakcije.get(i).getType().equals(REGULARINCOME)) {
+                    int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
+                    if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
+                            && (transakcije.get(i).getDate().getYear() == godina)) {
+                        finalna.add(transakcije.get(i));
                     }
                 }
-                else if (opcija.equals("REGULARPAYMENT")) {   // position == 2 itd...
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                    && (transakcije.get(i).getDate().getYear() == godina)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    }
-                } else if (opcija.equals("PURCHASE")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(PURCHASE) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == godina)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                } else if (opcija.equals("INDIVIDUALINCOME")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(INDIVIDUALINCOME) && (transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == godina)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
-                } else if (opcija.equals("REGULARINCOME")) {
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if (transakcije.get(i).getType().equals(REGULARINCOME)) {
-                            int mjesec2 = transakcije.get(i).getEndDate().getMonth().getValue();
-                            if ((mjesec >= transakcije.get(i).getDate().getMonth().getValue() && mjesec <= mjesec2)
-                                    && (transakcije.get(i).getDate().getYear() == godina)) {
-                                finalna.add(transakcije.get(i));
-                            }
-                        }
-                    }
-                } else if (opcija.equals("SVITIPOVI")) {                             // Napravio sam jos jednu opciju za sve tipove. Ovo je ekvivalentno opciji "Filter by",al sam napravio jos jednu formalno
-                    int i;
-                    for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
-                                && (transakcije.get(i).getDate().getYear() == godina)) {
-                            finalna.add(transakcije.get(i));
-                        }
-                    }
+            }
+        } else if (opcija.equals("SVITIPOVI")) {                             // Napravio sam jos jednu opciju za sve tipove. Ovo je ekvivalentno opciji "Filter by",al sam napravio jos jednu formalno
+            int i;
+            for (i = 0; i < transakcije.size(); i++) {
+                if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                        && (transakcije.get(i).getDate().getYear() == godina)) {
+                    finalna.add(transakcije.get(i));
                 }
-                    adapter1.notifyDataSetChanged();
+            }
+        }
+        adapter1.notifyDataSetChanged();
 
-                listview.setAdapter(adapter1);
+        listview.setAdapter(adapter1);
     }
 
     public void SortirajListu(ArrayList<Transaction> finalna,String opcija){
@@ -374,5 +381,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-

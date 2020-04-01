@@ -56,7 +56,7 @@ public class Transaction implements Comparable<Transaction> {
 
     public void setTitle(String title) {
         if(title.length() > 3 && title.length() < 15)
-        this.title = title;
+            this.title = title;
     }
 
     public Type getType() {

@@ -28,6 +28,8 @@ public class TransactionAddActivity extends AppCompatActivity {
     public TextView transactionInterval;
     public TextView endDate;
     public Button add;
+    public TextView lim;
+    public TextView budget;
     public Transaction transakcija = new Transaction();
     private Pattern regex = Pattern.compile("-?\\d+(\\.\\d+)?");
     private Pattern regexZaDatum = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
@@ -65,82 +67,89 @@ public class TransactionAddActivity extends AppCompatActivity {
 
 
                 MainActivity glavna_ak = new MainActivity();
-                Account akaunt = glavna_ak.getAkaunt();
+                //Account akaunt = glavna_ak.getAkaunt();
 
-                int money = akaunt.getBudget();
-                int limit = akaunt.getMonthLimit();
+                int money = glavna_ak.getAkaunt().getBudget();
+                System.out.println("Novac "+money);
+                int limit = glavna_ak.getAkaunt().getMonthLimit();
 
                 int vel = naslov.length();
                 // Validacija
-                    if (!(vel > 3 && vel < 15)) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("Naslov treba bit duzi od 3, a kraci od 15 znakova!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (!(Broj(vrijednost))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("Amount nije broj!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT") || noviTip.equals("PURCHASE") ||
-                            noviTip.equals("INDIVIDUALINCOME") || noviTip.equals("INDIVIDUALPAYMENT"))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("Tip nije validan!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (!(prviDate.matches(String.valueOf(regexZaDatum)))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("Date nije validan!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (description.length() != 0 && (noviTip.equals("INDIVIDUALINCOME") || noviTip.equals("REGULARINCOME"))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("itemDescription treba biti null za income transakcije!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (transaction_interval.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("transaction_interval mora biti null!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (transaction_interval.length() == 0 && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("transaction_interval ne smije biti null!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (drugiDate.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("endDate mora biti null za ovaj tip!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (drugiDate.length() == 0 && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("endDate ne smije biti null!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if ((!(drugiDate.matches(String.valueOf(regexZaDatum))) && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("endDate nije validan!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    } else if (!(Broj(transaction_interval))) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("transaction_interval nije broj!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    }
-                    else if(Integer.parseInt(vrijednost) > money){
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("Nemate dovoljno novca!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    }
-                    else if(Integer.parseInt(vrijednost) > limit){
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage("Suma novca koju ste unijeli prelazi vas mjesecni limit!");
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
-                    }
+                if (!(vel > 3 && vel < 15)) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Naslov treba bit duzi od 3, a kraci od 15 znakova!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (!(Broj(vrijednost))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Amount nije broj!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT") || noviTip.equals("PURCHASE") ||
+                        noviTip.equals("INDIVIDUALINCOME") || noviTip.equals("INDIVIDUALPAYMENT"))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Tip nije validan!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (!(prviDate.matches(String.valueOf(regexZaDatum)))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Date nije validan!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (description.length() != 0 && (noviTip.equals("INDIVIDUALINCOME") || noviTip.equals("REGULARINCOME"))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("itemDescription treba biti null za income transakcije!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if(description.length() == 0 && !(noviTip.equals("INDIVIDUALINCOME") || noviTip.equals("REGULARINCOME"))){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("itemDescription ne smije biti null za ovaj tip!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if (transaction_interval.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("transaction_interval mora biti null!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (transaction_interval.length() == 0 && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("transaction_interval ne smije biti null!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (drugiDate.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("endDate mora biti null za ovaj tip!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (drugiDate.length() == 0 && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("endDate ne smije biti null!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if ((!(drugiDate.matches(String.valueOf(regexZaDatum))) && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("endDate nije validan!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else if (!(Broj(transaction_interval)) && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("transaction_interval nije broj ili niste unijeli broj!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if(Integer.parseInt(vrijednost) > money){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Nemate dovoljno novca!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if(Integer.parseInt(vrijednost) > limit){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("Suma novca koju ste unijeli prelazi vas mjesecni limit!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
                     else {
 
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
@@ -151,6 +160,19 @@ public class TransactionAddActivity extends AppCompatActivity {
                                 "Yes",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
+
+                                     /*   if((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))){
+                                            int vr = money;
+                                            System.out.println("Money money "+vr);
+                                            vr += Integer.parseInt(vrijednost);
+                                            System.out.println("VRijed "+vr);
+                                            Account akaunt = glavna_ak.getAkaunt();
+                                            akaunt.setBudget(vr);
+                                            akaunt.setTotalLimit(vr);
+                                            akaunt.setMonthLimit(vr);
+                                            glavna_ak.setAkaunt(akaunt);
+                                        } */
+
                                         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                                         LocalDate d = LocalDate.parse(prviDate, dateTimeFormatter);  // Potrebno je parsirati preko dateformattera
 
@@ -164,6 +186,7 @@ public class TransactionAddActivity extends AppCompatActivity {
                                         transakcija.setType(t);
                                         if (!(t.equals(REGULARINCOME) || t.equals(INDIVIDUALINCOME)))
                                             transakcija.setItemDescription(description);
+                                        if(t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
                                         transakcija.setTransactionInterval(Integer.parseInt(transaction_interval));
 
                                         LocalDate pls2 = null;

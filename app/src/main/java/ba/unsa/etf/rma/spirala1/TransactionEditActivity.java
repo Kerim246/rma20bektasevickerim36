@@ -123,7 +123,13 @@ public class TransactionEditActivity extends AppCompatActivity {
                     builder1.setMessage("itemDescription treba biti null za income transakcije!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
-                }  else if (drugiDate.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
+                } else if(description.length() == 0 && !(noviTip.equals("INDIVIDUALINCOME") || noviTip.equals("REGULARINCOME"))){
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("itemDescription ne smije biti null za ovaj tip!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if (drugiDate.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
                     builder1.setMessage("endDate mora biti null za ovaj tip!");
                     AlertDialog alert11 = builder1.create();
@@ -138,9 +144,9 @@ public class TransactionEditActivity extends AppCompatActivity {
                     builder1.setMessage("endDate nije validan!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
-                } else if (!(Broj(transaction_interval))) {
+                } else if (!(Broj(transaction_interval))  && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                    builder1.setMessage("transaction_interval nije broj!");
+                    builder1.setMessage("transaction_interval nije broj ili niste unijeli broj!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
@@ -179,7 +185,8 @@ public class TransactionEditActivity extends AppCompatActivity {
                                     transakcija.setType(t);
                                     if (!(t.equals(REGULARINCOME) || t.equals(INDIVIDUALINCOME)))
                                         transakcija.setItemDescription(description);
-                                    transakcija.setTransactionInterval(Integer.parseInt(transaction_interval));
+                                    if(t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
+                                        transakcija.setTransactionInterval(Integer.parseInt(transaction_interval));
 
                                     LocalDate pls2 = null;
                                     if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
