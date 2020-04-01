@@ -65,13 +65,9 @@ public class TransactionAddActivity extends AppCompatActivity {
 
                 Context context = v.getContext();
 
+                int money = Account.budget;
+                int limit = Account.monthLimit;
 
-                MainActivity glavna_ak = new MainActivity();
-                //Account akaunt = glavna_ak.getAkaunt();
-
-                int money = glavna_ak.getAkaunt().getBudget();
-                System.out.println("Novac "+money);
-                int limit = glavna_ak.getAkaunt().getMonthLimit();
 
                 int vel = naslov.length();
                 // Validacija
@@ -161,17 +157,18 @@ public class TransactionAddActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                     /*   if((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))){
+                                        if((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))){
                                             int vr = money;
-                                            System.out.println("Money money "+vr);
                                             vr += Integer.parseInt(vrijednost);
-                                            System.out.println("VRijed "+vr);
-                                            Account akaunt = glavna_ak.getAkaunt();
-                                            akaunt.setBudget(vr);
-                                            akaunt.setTotalLimit(vr);
-                                            akaunt.setMonthLimit(vr);
-                                            glavna_ak.setAkaunt(akaunt);
-                                        } */
+
+                                            Account.budget = vr;
+                                        }
+                                        else {
+                                            int vr = money;
+                                            vr -= Integer.parseInt(vrijednost);
+
+                                            Account.budget = vr;
+                                        }
 
                                         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                                         LocalDate d = LocalDate.parse(prviDate, dateTimeFormatter);  // Potrebno je parsirati preko dateformattera

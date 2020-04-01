@@ -43,24 +43,16 @@ public class MainActivity extends AppCompatActivity {
     int promjena = 0;
     public Button AddTransaction;
     private ArrayList<FilterItem> filterItemi;
-    public Account akaunt = new Account(10000,5000,1000);
+
     int prviPut = 0;
-
-    public Account getAkaunt(){
-        return akaunt;
-    }
-
-    public void setAkaunt(Account akaunt){
-        this.akaunt = akaunt;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int repa = akaunt.getBudget();
-        int lim = akaunt.getMonthLimit();
+        int repa = Account.budget;
+        int lim = Account.monthLimit;
 
         amount = (TextView) findViewById(R.id.budzet);
         limit = (TextView) findViewById(R.id.limit);

@@ -88,12 +88,9 @@ public class TransactionEditActivity extends AppCompatActivity {
 
                 Context context = v.getContext();
 
+                int money = Account.budget;
+                int limit = Account.monthLimit;
 
-                MainActivity glavna_ak = new MainActivity();
-                Account akaunt = glavna_ak.getAkaunt();
-
-                int money = akaunt.getBudget();
-                int limit = akaunt.getMonthLimit();
 
                 int vel = naslov.length();
 
@@ -172,6 +169,20 @@ public class TransactionEditActivity extends AppCompatActivity {
                             "Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+
+                                    if((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))){
+                                        int vr = money;
+                                        vr += Integer.parseInt(vrijednost);
+
+                                        Account.budget = vr;
+                                    }
+                                    else {
+                                        int vr = money;
+                                        vr -= Integer.parseInt(vrijednost);
+
+                                        Account.budget = vr;
+                                    }
+
                                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                                     LocalDate d = LocalDate.parse(prviDate, dateTimeFormatter);  // Potrebno je parsirati preko dateformattera
 

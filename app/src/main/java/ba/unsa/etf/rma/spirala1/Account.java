@@ -1,9 +1,9 @@
 package ba.unsa.etf.rma.spirala1;
 
 public class Account {
-    private int budget;
-    private int totalLimit;
-    private int monthLimit;
+    public static int budget = 10000;
+    public static int totalLimit = 5000;
+    public static int monthLimit = 1000;
 
     public Account() {
     }
