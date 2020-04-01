@@ -129,9 +129,9 @@ public class TransactionAddActivity extends AppCompatActivity {
                     builder1.setMessage("endDate nije validan!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
-                } else if (!(Broj(transaction_interval)) && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
+                } else if ((!(Broj(transaction_interval)) || Integer.parseInt(transaction_interval) == 0) && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                    builder1.setMessage("transaction_interval nije broj ili niste unijeli broj!");
+                    builder1.setMessage("transaction_interval nije broj ili niste unijeli validnu vrijednost!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }

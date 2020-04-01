@@ -142,9 +142,15 @@ public class TransactionEditActivity extends AppCompatActivity {
                     builder1.setMessage("endDate nije validan!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
-                } else if (!(Broj(transaction_interval))  && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
+                } else if ((!(Broj(transaction_interval)) || Integer.parseInt(transaction_interval) == 0)  && (noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT"))) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                    builder1.setMessage("transaction_interval nije broj ili niste unijeli broj!");
+                    builder1.setMessage("transaction_interval nije broj ili niste unijeli validnu vrijednost!");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if (transaction_interval.length() != 0 && (!(noviTip.equals("REGULARINCOME") || noviTip.equals("REGULARPAYMENT")))) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                    builder1.setMessage("transaction_interval mora biti null!");
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 }
@@ -179,14 +185,14 @@ public class TransactionEditActivity extends AppCompatActivity {
 
                                     if((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))){
                                         int vr = money;
-                                        vr += Integer.parseInt(vrijednost);
-
+                                        int pom = Integer.parseInt(vrijednost) - kliknuta.getAmount();  // Da dodaje onoliko za koliko se povecalo
+                                        vr += pom;
                                         Account.budget = vr;
                                     }
                                     else {
                                         int vr = money;
-                                        vr -= Integer.parseInt(vrijednost);
-
+                                        int pom = Integer.parseInt(vrijednost) - kliknuta.getAmount();  // Odbija od racuna za onoliko koliko se promijenilo
+                                        vr -= pom;
                                         Account.budget = vr;
                                     }
 
