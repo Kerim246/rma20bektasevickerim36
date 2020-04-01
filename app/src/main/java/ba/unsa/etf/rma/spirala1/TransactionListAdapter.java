@@ -70,7 +70,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
         }
 
         amountID = newView.findViewById(R.id.amountID);
-        amountID.setText("Amount:"+Integer.toString(transaction.getAmount()));
+        amountID.setText(", Amount:"+Integer.toString(transaction.getAmount()));
 
         return newView;
     }

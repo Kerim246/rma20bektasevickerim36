@@ -7,16 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormatSymbols;
-import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +25,6 @@ import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALINCOME;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALPAYMENT;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.PURCHASE;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARINCOME;
-import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARPAYMENT;
 
 public class MainActivity extends AppCompatActivity {
     private TextView datumMjesec;
@@ -42,24 +39,23 @@ public class MainActivity extends AppCompatActivity {
     public TextView amount;
     ArrayList<Transaction> transakcije;
     int promjena = 0;
-
+    public Button AddTransaction;
     private ArrayList<FilterItem> filterItemi;
+    public Account akaunt = new Account(10000,5000,1000);
 
-
+    public Account getAkaunt(){
+        return akaunt;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Account akaunt = new Account();
-        akaunt.setBudget(10000);
-        akaunt.setTotalLimit(5000);
-
         int repa = akaunt.getBudget();
-        int lim = akaunt.getTotalLimit();
+        int lim = akaunt.getMonthLimit();
 
-        amount = (TextView) findViewById(R.id.amount);
+        amount = (TextView) findViewById(R.id.budzet);
         limit = (TextView) findViewById(R.id.limit);
 
         amount.setText(Integer.toString(repa));
@@ -227,6 +223,16 @@ public class MainActivity extends AppCompatActivity {
         listview.setOnItemClickListener(listItemClickListener);
 
 
+        AddTransaction =(Button)findViewById(R.id.DodajTransakaciju);
+
+        AddTransaction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent TransactionAddIntent = new Intent(MainActivity.this, TransactionAddActivity.class);
+                MainActivity.this.startActivity(TransactionAddIntent);
+            }
+        });
+
 
     }
 
@@ -235,14 +241,17 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent TransactionDetailIntent = new Intent(MainActivity.this, TransactionDetailActivity.class);
             Transaction transakcija = adapter1.getItem(position);
-            TransactionDetailIntent.putExtra("date", transakcija.getDate());
-            TransactionDetailIntent.putExtra("amount", transakcija.getAmount());
+            TransactionDetailIntent.putExtra("date", transakcija.getDate().toString());
+            TransactionDetailIntent.putExtra("amount", Integer.toString(transakcija.getAmount()));
             TransactionDetailIntent.putExtra("title", transakcija.getTitle());
-            TransactionDetailIntent.putExtra("type", transakcija.getType());
+            TransactionDetailIntent.putExtra("type", transakcija.getType().toString());
             TransactionDetailIntent.putExtra("itemDescription", transakcija.getItemDescription());
-            TransactionDetailIntent.putExtra("transactionInterval", transakcija.getTransactionInterval());
-            TransactionDetailIntent.putExtra("endDate", transakcija.getEndDate());
+            TransactionDetailIntent.putExtra("transactionInterval", Integer.toString(transakcija.getTransactionInterval()));
+            if(transakcija.getEndDate() != null)
+            TransactionDetailIntent.putExtra("endDate", transakcija.getEndDate().toString());
             MainActivity.this.startActivity(TransactionDetailIntent);
+
+
         }
     };
 
@@ -260,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                     int i;
                     transakcije = TransactionModel.getTransactions();
                     for (i = 0; i < transakcije.size(); i++) {
-                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)
+                        if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)   // Znaci pocetna lista je lista svih tipova za trenutni mjesec i godinu
                                 && (transakcije.get(i).getDate().getYear() == godina)) {
                             finalna.add(transakcije.get(i));
                         }
@@ -314,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-                } else if (opcija.equals("SVITIPOVI")) {
+                } else if (opcija.equals("SVITIPOVI")) {                             // Napravio sam jos jednu opciju za sve tipove. Ovo je ekvivalentno opciji "Filter by",al sam napravio jos jednu formalno
                     int i;
                     for (i = 0; i < transakcije.size(); i++) {
                         if ((transakcije.get(i).getDate().getMonth().getValue() == mjesec)

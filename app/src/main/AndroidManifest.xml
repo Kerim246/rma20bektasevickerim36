@@ -18,6 +18,10 @@
         </activity>
         <activity android:name=".TransactionDetailActivity">
         </activity>
+        <activity android:name=".TransactionEditActivity">
+        </activity>
+        <activity android:name=".TransactionAddActivity">
+        </activity>
     </application>
 
 </manifest>
