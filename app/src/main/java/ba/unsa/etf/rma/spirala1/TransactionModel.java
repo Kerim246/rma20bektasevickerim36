@@ -35,7 +35,7 @@ public final class TransactionModel {
         transactions.add(new Transaction(LocalDate.of(2020,4,8),13,"Sesnaesta",INDIVIDUALINCOME,null,0,null));
         transactions.add(new Transaction(LocalDate.of(2020,5,7),77,"Sedamnaesta",PURCHASE,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,3,11),82,"Osamnaesta",INDIVIDUALINCOME,null,0,null));
-        transactions.add(new Transaction(LocalDate.of(2020,4,6),79,"Devetnaesta",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",10,null));
+        transactions.add(new Transaction(LocalDate.of(2020,4,6),79,"Devetnaesta",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,6,6),54,"Dvadeseta",INDIVIDUALINCOME,null,0,null));
 
         transactions.add(new Transaction(LocalDate.of(2020,5,24),1,"Dvadesetprv",REGULARINCOME,null,12,LocalDate.of(2020,7,11)));

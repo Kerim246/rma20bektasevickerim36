@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -15,6 +16,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALINCOME;
+import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALPAYMENT;
+import static ba.unsa.etf.rma.spirala1.Transaction.Type.PURCHASE;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARINCOME;
 import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARPAYMENT;
 
@@ -29,6 +33,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
     public TextView endDate;
     public Button obrisi;
     public Button edit;
+    public ImageView icon;
     private Pattern regex = Pattern.compile("-?\\d+(\\.\\d+)?");
     public Transaction transakcija = new Transaction();
     public Transaction kliknuta = new Transaction();
@@ -60,7 +65,23 @@ public class TransactionDetailActivity extends AppCompatActivity {
         transactionInterval.setText(getIntent().getStringExtra("transactionInterval"));
         endDate.setText(getIntent().getStringExtra("endDate"));
 
+        icon = (ImageView)findViewById(R.id.ikona);
 
+        if(konverzija(getIntent().getStringExtra("type")).equals(INDIVIDUALPAYMENT)){
+            icon.setImageResource(R.mipmap.prvitip);
+        }
+        else if(konverzija(getIntent().getStringExtra("type")).equals(REGULARPAYMENT)){
+            icon.setImageResource(R.mipmap.drugitip_ground);
+        }
+        else if(konverzija(getIntent().getStringExtra("type")).equals(PURCHASE)){
+            icon.setImageResource(R.mipmap.trecitip_ground);
+        }
+        else if(konverzija(getIntent().getStringExtra("type")).equals(INDIVIDUALINCOME)){
+            icon.setImageResource(R.mipmap.cetvrtitip_ground);
+        }
+        else if(konverzija(getIntent().getStringExtra("type")).equals(REGULARINCOME)){
+            icon.setImageResource(R.mipmap.petitip_ground);
+        }
 
         Transaction.Type t1;
         t1 = konverzija(getIntent().getStringExtra("type"));
