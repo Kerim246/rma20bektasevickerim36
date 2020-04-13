@@ -1,9 +1,11 @@
-package ba.unsa.etf.rma.spirala1;
+package ba.unsa.etf.rma.spirala2;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-public class Transaction implements Comparable<Transaction> {
+public class Transaction implements Comparable<Transaction>, Parcelable{
     private LocalDate date;
     private int amount;
     private String title;
@@ -15,6 +17,44 @@ public class Transaction implements Comparable<Transaction> {
     private String itemDescription;
     private int transactionInterval;
     private LocalDate endDate;
+
+    protected Transaction(Parcel in) {
+        date = (LocalDate)in.readSerializable();
+        amount = in.readInt();
+        title = in.readString();
+        type = (Transaction.Type) in.readSerializable();
+        itemDescription = in.readString();
+        transactionInterval = in.readInt();
+        endDate = (LocalDate)in.readSerializable();
+    }
+
+    public static final Parcelable.Creator<Transaction> CREATOR = new Creator<Transaction>() {
+        @Override
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        @Override
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(date);
+        dest.writeInt(amount);
+        dest.writeString(title);
+        dest.writeSerializable(type);
+        dest.writeString(itemDescription);
+        dest.writeInt(transactionInterval);
+        dest.writeSerializable(endDate);
+    }
 
     @Override
     public int compareTo(Transaction o) {

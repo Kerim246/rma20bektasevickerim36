@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.spirala1;
+package ba.unsa.etf.rma.spirala2;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,16 +9,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALINCOME;
-import static ba.unsa.etf.rma.spirala1.Transaction.Type.INDIVIDUALPAYMENT;
-import static ba.unsa.etf.rma.spirala1.Transaction.Type.PURCHASE;
-import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARINCOME;
-import static ba.unsa.etf.rma.spirala1.Transaction.Type.REGULARPAYMENT;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.INDIVIDUALINCOME;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.INDIVIDUALPAYMENT;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.PURCHASE;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.REGULARINCOME;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.REGULARPAYMENT;
 
 public class TransactionListAdapter extends ArrayAdapter<Transaction> {
     private Transaction transaction;
@@ -76,9 +74,10 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
     }
 
     public Transaction getTransaction(int pozicija){
-        return transactions.get(pozicija);
+        return this.getItem(pozicija);
     }
 
-
-
+    public void setTransactions(ArrayList<Transaction> transactions) {
+        this.addAll(transactions);
+    }
 }

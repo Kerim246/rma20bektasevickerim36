@@ -102,6 +102,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
+
     <EditText
         android:id="@+id/budzet"
         android:layout_width="220dp"
@@ -124,8 +125,8 @@
         android:id="@+id/itemDescription"
         android:layout_width="220dp"
         android:layout_height="45dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="212dp"
         app:layout_constraintStart_toEndOf="@+id/textView7"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -134,18 +135,28 @@
         android:layout_width="220dp"
         android:layout_height="48dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="267dp"
         app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/DodajTransakciju"
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="100dp"
+        android:text="Save"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endDate" />
+
+    <Button
+        android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="96dp"
-        android:text="Add"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="101dp"
+        android:text="Delete"
+        app:layout_constraintStart_toEndOf="@+id/save"
         app:layout_constraintTop_toBottomOf="@+id/endDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

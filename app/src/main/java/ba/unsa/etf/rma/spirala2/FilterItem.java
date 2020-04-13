@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.spirala1;
+package ba.unsa.etf.rma.spirala2;
 
 public class FilterItem {
     private String FilterItem;

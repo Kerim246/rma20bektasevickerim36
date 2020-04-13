@@ -1,4 +1,4 @@
-package ba.unsa.etf.rma.spirala1;
+package ba.unsa.etf.rma.spirala2;
 
 public class Account {
     public static int budget = 10000;
