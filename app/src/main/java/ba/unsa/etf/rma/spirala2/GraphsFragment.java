@@ -425,7 +425,7 @@ public class GraphsFragment extends Fragment {
                 int month = transactions.get(i).getDate().getMonth().getValue();
                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
 
-                for(int j=month ; j<endMonth ; j++) {
+                for(int j=month ; j<=endMonth ; j++) {
                     mjeseci[j - 1] += transactions.get(i).getAmount();      // Sa obzirom da se regular transakcija pojavljuje od date to endDate,potrebno je svaki mjesec izmedju povecati potrosnju za onoliko koliko iznosi
                 }
             }
@@ -449,7 +449,7 @@ public class GraphsFragment extends Fragment {
                 int month = transactions.get(i).getDate().getMonth().getValue();
                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
 
-                for (int j = month; j < endMonth; j++) {
+                for (int j = month; j <= endMonth; j++) {
                     mjeseci[j - 1] += transactions.get(i).getAmount();
                 }
             }
