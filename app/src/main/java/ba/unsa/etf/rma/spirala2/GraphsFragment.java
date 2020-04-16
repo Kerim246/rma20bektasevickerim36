@@ -155,7 +155,7 @@ public class GraphsFragment extends Fragment {
 
                             }
 
-                        LineDataSet lineDataSet = new LineDataSet(sedmica(), "Potrošnja po sedmici");
+                        LineDataSet lineDataSet = new LineDataSet(sedmica(5), "Potrošnja po sedmici");
                         lineDataSet.setColor(Color.RED);
                         lineDataSet.setValueTextSize(9f);
                         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
@@ -205,7 +205,7 @@ public class GraphsFragment extends Fragment {
                             }
 
                         }
-                        LineDataSet lineDataSet2 = new LineDataSet(sedmica(), "Zarada po sedmici");
+                        LineDataSet lineDataSet2 = new LineDataSet(sedmica(5), "Zarada po sedmici");
                         lineDataSet2.setColor(Color.GREEN);
                         lineDataSet2.setValueTextSize(9f);
                         ArrayList<ILineDataSet> dataSets1 = new ArrayList<>();
@@ -220,6 +220,17 @@ public class GraphsFragment extends Fragment {
                         for(int i=0 ; i<transactions.size() ; i++) {
                             if (!(transactions.get(i).getType().equals(REGULARINCOME) || transactions.get(i).getType().equals(INDIVIDUALINCOME)) && !(transactions.get(i).getType().equals(REGULARPAYMENT))) {
                                 if (transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
+                                    budzeti[0] -= transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
+                                    budzeti[1] -= transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21)
+                                    budzeti[2] -= transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28)
+                                    budzeti[3] -= transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
+                                    budzeti[4] -= transactions.get(i).getAmount();
+                            } else if (transactions.get(i).getType().equals(INDIVIDUALINCOME)) {
+                                if (transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
                                     budzeti[0] += transactions.get(i).getAmount();
                                 else if (transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
                                     budzeti[1] += transactions.get(i).getAmount();
@@ -229,8 +240,6 @@ public class GraphsFragment extends Fragment {
                                     budzeti[3] += transactions.get(i).getAmount();
                                 else if (transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
                                     budzeti[4] += transactions.get(i).getAmount();
-                            } else if (transactions.get(i).getType().equals(INDIVIDUALINCOME)) {
-                                budzeti[transactions.get(i).getDate().getDayOfMonth() - 1] += transactions.get(i).getAmount();
                             } else if (transactions.get(i).getType().equals(REGULARINCOME)) {
                                 int month = transactions.get(i).getDate().getMonth().getValue();
                                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
@@ -289,7 +298,7 @@ public class GraphsFragment extends Fragment {
                          dani = new int[dani_u_mjesecu];
                         restartujDane(dani_u_mjesecu);
                         for (int i = 0; i < transactions.size(); i++) {
-                            if (!(transactions.get(i).getType().equals(REGULARINCOME) || transactions.get(i).getType().equals(INDIVIDUALINCOME))) {
+                            if (!(transactions.get(i).getType().equals(REGULARINCOME) || transactions.get(i).getType().equals(INDIVIDUALINCOME)) && (!(transactions.get(i).getType().equals(REGULARPAYMENT)))) {
                                 if(transactions.get(i).getDate().getMonth().getValue() == mjesec){
                                   dani[transactions.get(i).getDate().getDayOfMonth()-1] += transactions.get(i).getAmount();
                                 }
@@ -501,40 +510,42 @@ public class GraphsFragment extends Fragment {
 
     private ArrayList<Entry> mjesec() {
         ArrayList<Entry> dataVals = new ArrayList<>();
+        dataVals.add(new Entry(0,0));
 
-        for(int i=0 ; i<12 ; i++){
-            dataVals.add(new Entry(i+1,mjeseci[i]));
+        for(int i=1 ; i<=12 ; i++){
+            dataVals.add(new Entry(i,mjeseci[i-1]));
         }
 
 
         return dataVals;
     }
 
-    private ArrayList<Entry> sedmica() {
+    private ArrayList<Entry> sedmica(int br) {
         ArrayList<Entry> dataVals = new ArrayList<>();
-        dataVals.add(new Entry(1, sedmice[0]));
-        dataVals.add(new Entry(2, sedmice[1]));
-        dataVals.add(new Entry(3, sedmice[2]));
-        dataVals.add(new Entry(4, sedmice[3]));
-        dataVals.add(new Entry(5, sedmice[4]));
+        dataVals.add(new Entry(0, 0));
+
+        for(int i = 1 ; i<=br ; i++){
+            dataVals.add(new Entry(i,sedmice[i-1]));
+        }
+
 
         return dataVals;
     }
 
     private ArrayList<Entry> dan(int dani_u_mjesecu) {
         ArrayList<Entry> dataVals = new ArrayList<>();
-
-        for(int i=0 ; i<dani_u_mjesecu ; i++){
-            dataVals.add(new Entry(i+1,dani[i]));
+        dataVals.add(new Entry(0,0));
+        for(int i=1 ; i<=dani_u_mjesecu ; i++){
+            dataVals.add(new Entry(i,dani[i-1]));
         }
         return dataVals;
     }
 
     private ArrayList<Entry> budzet(int var) {
         ArrayList<Entry> dataVals = new ArrayList<>();
-
-        for(int i=0 ; i<var ; i++){
-            dataVals.add(new Entry(i+1,budzeti[i]));
+        dataVals.add(new Entry(0,0));
+        for(int i=1 ; i<=var ; i++){
+            dataVals.add(new Entry(i,budzeti[i-1]));
         }
         return dataVals;
     }
