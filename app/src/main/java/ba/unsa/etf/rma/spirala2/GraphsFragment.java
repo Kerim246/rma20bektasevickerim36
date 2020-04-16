@@ -475,7 +475,7 @@ public class GraphsFragment extends Fragment {
                 int month = transactions.get(i).getDate().getMonth().getValue();
                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
 
-                for (int j = month; j < endMonth; j++) {
+                for (int j = month; j <= endMonth; j++) {
                     budzeti[transactions.get(i).getDate().getMonth().getValue()-1] -= transactions.get(i).getAmount();
                 }
             }
