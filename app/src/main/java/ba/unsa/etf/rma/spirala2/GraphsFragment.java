@@ -112,73 +112,48 @@ public class GraphsFragment extends Fragment {
 
                     }
                     else if(position == 2){
+                        int br = 0;
                         restartujSedmice();
                         for (int i = 0; i < transactions.size(); i++) {
                             if (!(transactions.get(i).getType().equals(REGULARINCOME) || transactions.get(i).getType().equals(INDIVIDUALINCOME))) {
                                 if(transactions.get(i).getDate().getMonth().getValue() == mjesec){        // Po sedmici za trenutni mjesec
                                     if(transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7){
-                                        if(transactions.get(i).getType().equals(REGULARPAYMENT)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[0] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
                                         sedmice[0] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14){
-                                        if(transactions.get(i).getType().equals(REGULARPAYMENT)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[1] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
                                         sedmice[1] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21) {
-                                        if(transactions.get(i).getType().equals(REGULARPAYMENT)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[2] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
                                         sedmice[2] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28) {
-                                        if(transactions.get(i).getType().equals(REGULARPAYMENT)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[3] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
                                         sedmice[3] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31) {
-                                        if(transactions.get(i).getType().equals(REGULARPAYMENT)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[4] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
                                         sedmice[4] += transactions.get(i).getAmount();
                                     }
                                 }
                             }
-                        }
+                            if(transactions.get(i).getType().equals(REGULARPAYMENT)){
+                                    int month = transactions.get(i).getDate().getMonth().getValue();
+                                    int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
+                                    if(mjesec >= month && mjesec <= endMonth) {
+                                        if(transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
+                                        sedmice[0] += transactions.get(i).getAmount();
+                                        else if(transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
+                                            sedmice[1] += transactions.get(i).getAmount();
+                                        else if(transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21)
+                                            sedmice[2] += transactions.get(i).getAmount();
+                                        else if(transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28)
+                                            sedmice[3] += transactions.get(i).getAmount();
+                                        else if(transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
+                                            sedmice[4] += transactions.get(i).getAmount();
+
+                                    }
+                                }
+
+                            }
+
                         LineDataSet lineDataSet = new LineDataSet(sedmica(), "Potrošnja po sedmici");
                         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
@@ -192,69 +167,43 @@ public class GraphsFragment extends Fragment {
                             if (transactions.get(i).getType().equals(INDIVIDUALINCOME)) {
                                 if(transactions.get(i).getDate().getMonth().getValue() == mjesec){        // Po sedmici za trenutni mjesec
                                     if(transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7){
-                                        if(transactions.get(i).getType().equals(REGULARINCOME)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[0] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
-                                            sedmice[0] += transactions.get(i).getAmount();
+                                        sedmice[0] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14){
-                                        if(transactions.get(i).getType().equals(REGULARINCOME)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[1] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
-                                            sedmice[1] += transactions.get(i).getAmount();
+                                        sedmice[1] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21) {
-                                        if(transactions.get(i).getType().equals(REGULARINCOME)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[2] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
-                                            sedmice[2] += transactions.get(i).getAmount();
+                                        sedmice[2] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28) {
-                                        if(transactions.get(i).getType().equals(REGULARINCOME)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[3] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
-                                            sedmice[3] += transactions.get(i).getAmount();
+                                        sedmice[3] += transactions.get(i).getAmount();
                                     }
                                     else if(transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31) {
-                                        if(transactions.get(i).getType().equals(REGULARINCOME)){
-                                            int month = transactions.get(i).getDate().getMonth().getValue();
-                                            int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-
-                                            if(mjesec >= month && mjesec <= endMonth) {
-                                                sedmice[4] += transactions.get(i).getAmount();
-                                            }
-                                        }
-                                        else
-                                            sedmice[4] += transactions.get(i).getAmount();
+                                        sedmice[4] += transactions.get(i).getAmount();
                                     }
                                 }
                             }
-                        }
+                            if(transactions.get(i).getType().equals(REGULARINCOME)){
+                                int month = transactions.get(i).getDate().getMonth().getValue();
+                                int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
+                                br++;
+                                if(mjesec >= month && mjesec <= endMonth) {
+                                    if(transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
+                                        sedmice[0] += transactions.get(i).getAmount();
+                                    else if(transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
+                                        sedmice[1] += transactions.get(i).getAmount();
+                                    else if(transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21)
+                                        sedmice[2] += transactions.get(i).getAmount();
+                                    else if(transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28)
+                                        sedmice[3] += transactions.get(i).getAmount();
+                                    else if(transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
+                                        sedmice[4] += transactions.get(i).getAmount();
 
+                                }
+                            }
+
+                        }
+                        System.out.println("BROJ JE "+br);
                         LineDataSet lineDataSet2 = new LineDataSet(sedmica(), "Zarada po sedmici");
                         ArrayList<ILineDataSet> dataSets1 = new ArrayList<>();
                         dataSets1.add(lineDataSet2);
@@ -265,34 +214,61 @@ public class GraphsFragment extends Fragment {
                         restartujMjesece();
                         restartujStanje();
 
-                        for(int i=0 ; i<transactions.size() ; i++){
-                            if(!(transactions.get(i).getType().equals(REGULARINCOME) || transactions.get(i).getType().equals(INDIVIDUALINCOME)) && !(transactions.get(i).getType().equals(REGULARPAYMENT)))
-                                budzeti[transactions.get(i).getDate().getDayOfMonth()-1] -= transactions.get(i).getAmount();
-                            else if(transactions.get(i).getType().equals(REGULARPAYMENT)){
+                        for(int i=0 ; i<transactions.size() ; i++) {
+                            if (!(transactions.get(i).getType().equals(REGULARINCOME) || transactions.get(i).getType().equals(INDIVIDUALINCOME)) && !(transactions.get(i).getType().equals(REGULARPAYMENT))) {
+                                if (transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
+                                    budzeti[0] += transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
+                                    budzeti[1] += transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21)
+                                    budzeti[2] += transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28)
+                                    budzeti[3] += transactions.get(i).getAmount();
+                                else if (transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
+                                    budzeti[4] += transactions.get(i).getAmount();
+                            } else if (transactions.get(i).getType().equals(INDIVIDUALINCOME)) {
+                                budzeti[transactions.get(i).getDate().getDayOfMonth() - 1] += transactions.get(i).getAmount();
+                            } else if (transactions.get(i).getType().equals(REGULARINCOME)) {
                                 int month = transactions.get(i).getDate().getMonth().getValue();
                                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
 
-                                for (int j = month; j < endMonth; j++) {
-                                    budzeti[transactions.get(i).getDate().getDayOfMonth()-1] -= transactions.get(i).getAmount();
+                                if (mjesec >= month && mjesec <= endMonth) {
+                                    if (transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
+                                        budzeti[0] += transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
+                                        budzeti[1] += transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21)
+                                        budzeti[2] += transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28)
+                                        budzeti[3] += transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
+                                        budzeti[4] += transactions.get(i).getAmount();
                                 }
-                            }
-                            else if(transactions.get(i).getType().equals(INDIVIDUALINCOME)){
-                                budzeti[transactions.get(i).getDate().getDayOfMonth()-1] += transactions.get(i).getAmount();
-                            }
-                            else if(transactions.get(i).getType().equals(REGULARINCOME)){
+                            } else if (transactions.get(i).getType().equals(REGULARPAYMENT)) {
                                 int month = transactions.get(i).getDate().getMonth().getValue();
                                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
 
-                                if(mjesec >= month && mjesec <= endMonth) {
-                                    budzeti[transactions.get(i).getDate().getDayOfMonth()-1] += transactions.get(i).getAmount();
+                                if (mjesec >= month && mjesec <= endMonth) {
+                                    if (transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
+                                        budzeti[0] -= transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 8 && transactions.get(i).getDate().getDayOfMonth() <= 14)
+                                        budzeti[1] -= transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 15 && transactions.get(i).getDate().getDayOfMonth() <= 21)
+                                        budzeti[2] -= transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 22 && transactions.get(i).getDate().getDayOfMonth() <= 28)
+                                        budzeti[3] -= transactions.get(i).getAmount();
+                                    else if (transactions.get(i).getDate().getDayOfMonth() >= 29 && transactions.get(i).getDate().getDayOfMonth() <= 31)
+                                        budzeti[4] -= transactions.get(i).getAmount();
                                 }
                             }
+
                         }
+
 
                         for(int i=1 ; i<12 ; i++){
                             budzeti[i] += budzeti[i-1];  // Nadovezivanje
                         }
-                        lineDataSet = new LineDataSet(budzet(5), "Zarada po sedmici");
+                        lineDataSet = new LineDataSet(budzet(5), "ukupno_stanje po sedmici");
                         dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -367,7 +343,7 @@ public class GraphsFragment extends Fragment {
                                 int month = transactions.get(i).getDate().getMonth().getValue();
                                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
 
-                                for (int j = month; j < endMonth; j++) {
+                                if(mjesec >= month && mjesec <= endMonth) {
                                     budzeti[transactions.get(i).getDate().getDayOfMonth()-1] -= transactions.get(i).getAmount();
                                 }
                             }
@@ -387,7 +363,7 @@ public class GraphsFragment extends Fragment {
                         for(int i=1 ; i<12 ; i++){
                             budzeti[i] += budzeti[i-1];  // Nadovezivanje
                         }
-                        lineDataSet = new LineDataSet(budzet(dani_u_mjesecu), "Zarada po danu");
+                        lineDataSet = new LineDataSet(budzet(dani_u_mjesecu), "ukupno_stanje po danu");
                         dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
