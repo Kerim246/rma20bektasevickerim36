@@ -1,5 +1,6 @@
 package ba.unsa.etf.rma.spirala2;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.SurfaceControl;
@@ -155,6 +156,8 @@ public class GraphsFragment extends Fragment {
                             }
 
                         LineDataSet lineDataSet = new LineDataSet(sedmica(), "Potrošnja po sedmici");
+                        lineDataSet.setColor(Color.RED);
+                        lineDataSet.setValueTextSize(9f);
                         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -186,7 +189,6 @@ public class GraphsFragment extends Fragment {
                             if(transactions.get(i).getType().equals(REGULARINCOME)){
                                 int month = transactions.get(i).getDate().getMonth().getValue();
                                 int endMonth = transactions.get(i).getEndDate().getMonth().getValue();
-                                br++;
                                 if(mjesec >= month && mjesec <= endMonth) {
                                     if(transactions.get(i).getDate().getDayOfMonth() >= 1 && transactions.get(i).getDate().getDayOfMonth() <= 7)
                                         sedmice[0] += transactions.get(i).getAmount();
@@ -203,8 +205,9 @@ public class GraphsFragment extends Fragment {
                             }
 
                         }
-                        System.out.println("BROJ JE "+br);
                         LineDataSet lineDataSet2 = new LineDataSet(sedmica(), "Zarada po sedmici");
+                        lineDataSet2.setColor(Color.GREEN);
+                        lineDataSet2.setValueTextSize(9f);
                         ArrayList<ILineDataSet> dataSets1 = new ArrayList<>();
                         dataSets1.add(lineDataSet2);
 
@@ -269,6 +272,8 @@ public class GraphsFragment extends Fragment {
                             budzeti[i] += budzeti[i-1];  // Nadovezivanje
                         }
                         lineDataSet = new LineDataSet(budzet(5), "ukupno_stanje po sedmici");
+                        lineDataSet.setValueTextSize(9f);
+                        lineDataSet.setColor(Color.YELLOW);
                         dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -300,6 +305,8 @@ public class GraphsFragment extends Fragment {
                             }
                         }
                         LineDataSet lineDataSet = new LineDataSet(dan(dani_u_mjesecu), "Potrošnja po danu");
+                        lineDataSet.setColor(Color.RED);
+                        lineDataSet.setValueTextSize(9f);
                         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -325,6 +332,8 @@ public class GraphsFragment extends Fragment {
                             }
                         }
                          lineDataSet = new LineDataSet(dan(dani_u_mjesecu), "Zarada po danu");
+                        lineDataSet.setColor(Color.GREEN);
+                        lineDataSet.setValueTextSize(9f);
                         dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -364,6 +373,8 @@ public class GraphsFragment extends Fragment {
                             budzeti[i] += budzeti[i-1];  // Nadovezivanje
                         }
                         lineDataSet = new LineDataSet(budzet(dani_u_mjesecu), "ukupno_stanje po danu");
+                        lineDataSet.setColor(Color.YELLOW);
+                        lineDataSet.setValueTextSize(9f);
                         dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -411,6 +422,8 @@ public class GraphsFragment extends Fragment {
             }
         }
         LineDataSet lineDataSet1 = new LineDataSet(mjesec(), "Potrošnja po mjesecu");
+        lineDataSet1.setValueTextSize(9f);
+        lineDataSet1.setColor(Color.RED);
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataSet1);
 
@@ -433,6 +446,8 @@ public class GraphsFragment extends Fragment {
             }
         }
         LineDataSet lineDataSet2 = new LineDataSet(mjesec(), "Zarada po mjesecu");
+        lineDataSet2.setColor(Color.GREEN);
+        lineDataSet2.setValueTextSize(9f);
         ArrayList<ILineDataSet> dataSets1 = new ArrayList<>();
         dataSets1.add(lineDataSet2);
 
@@ -473,6 +488,8 @@ public class GraphsFragment extends Fragment {
         }
 
          lineDataSet2 = new LineDataSet(budzet(12), "ukupno_stanje po mjesecu");
+        lineDataSet2.setColor(Color.YELLOW);
+        lineDataSet2.setValueTextSize(9f);
         dataSets1 = new ArrayList<>();
         dataSets1.add(lineDataSet2);
 
