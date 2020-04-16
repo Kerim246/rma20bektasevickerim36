@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -40,12 +41,12 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
     private int promjena = 0;
     private TextView amount;
     private TextView limit;
-    private ArrayList<Transaction> finalna = new ArrayList<>();
+    public ArrayList<Transaction> finalna = new ArrayList<>();
     private ArrayList<Transaction> selektovane = new ArrayList<>();
     ConstraintLayout layout;
 
     public interface OnItemClick {
-        public void onItemClicked(Transaction transaction,boolean kliknutaDvaPut);
+        public void onItemClicked(Transaction transaction,boolean kliknutaDvaPut,boolean jednak);
     }
 
     private OnItemClick onItemClick;
@@ -82,11 +83,10 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         View fragmentView = inflater.inflate(R.layout.fragment_list, container, false);
 
         int repa = Account.budget;
-        int lim = Account.monthLimit;
+        int lim = Account.totalLimit;
 
         amount = fragmentView.findViewById(R.id.budzet);
         limit = fragmentView.findViewById(R.id.limit);
-
         amount.setText(Integer.toString(repa));
         limit.setText(Integer.toString(lim));
 
@@ -283,16 +283,30 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
             @Override
             public void onSwipeLeft() {
                 super.onSwipeLeft();
-                Toast.makeText(getContext(), "Swipe Left gesture detected", Toast.LENGTH_SHORT).show();
+                Fragment someFragment = new TransactionListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("transactions",finalna);
+                String []mjesec = datumMjesec.getText().toString().split(",");
+                bundle.putString("mjesec",mjesec[0]);
+                BudgetFragment fragment = new BudgetFragment();
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.transactions_list, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
             @Override
             public void onSwipeRight() {
                 super.onSwipeRight();
-                Toast.makeText(getContext(), "Swipe Right gesture detected", Toast.LENGTH_SHORT).show();
-                Fragment someFragment = new TransactionListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("transactions",finalna);
+                String []mjesec = datumMjesec.getText().toString().split(",");
+                GraphsFragment graphsFragment = new GraphsFragment();
+                bundle.putString("mjesec",mjesec[0]);
+                graphsFragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.transactions_list, new BudgetFragment()); // give your fragment container id in first parameter
-                transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+                transaction.replace(R.id.transactions_list, graphsFragment);
+                transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
@@ -316,25 +330,35 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             boolean kliknutaDvaput = false;
             Transaction transaction = transactionListAdapter.getTransaction(position);
+            boolean pom = false;
+            boolean jednak = false;
 
-            if(selektovane.contains(transaction)){
-                kliknutaDvaput = true;
-                selektovane.remove(transaction);
-                view.setBackgroundColor(Color.WHITE);
-            }
-            else {
-                view.setBackgroundColor(Color.YELLOW);
-                selektovane.add(transaction);
-                int vel = transactionListAdapter.getCount(); // vraca velicinu adaptera
-                for (int i = 0; i <= listView.getLastVisiblePosition() - listView.getFirstVisiblePosition(); i++) {  // Mora ovako,ne moze <vel jer baca null exception
-                    View v = listView.getChildAt(i);   // vraca view(svaki element listviewa)
-                    if (v != view) {
-                        v.setBackgroundColor(Color.WHITE);         // Postavi background na sve ostale elemente white osim trenutne(na koju se kliknulo)
+                if (selektovane.contains(transaction)) {
+                    kliknutaDvaput = true;
+                    selektovane.remove(transaction);
+                    view.setBackgroundColor(Color.WHITE);
+                } else {
+                    view.setBackgroundColor(Color.YELLOW);
+                    selektovane.add(transaction);
+                    listView.setItemChecked(position,true);
+
+                    for(int i=0 ; i<selektovane.size() ; i++){
+                        for(int j=i+1 ; j<selektovane.size() ; j++){
+                            if(selektovane.get(i).getTitle().equals(selektovane.get(j).getTitle())){
+                                jednak = true;
+                            }
+                        }
                     }
-                }
 
+                    int vel = transactionListAdapter.getCount(); // vraca velicinu adaptera
+                    for (int i = 0; i <= listView.getLastVisiblePosition() - listView.getFirstVisiblePosition(); i++) {  // Mora ovako,ne moze <vel jer baca null exception
+                        View v = listView.getChildAt(i);   // vraca view(svaki element listviewa)
+                        if (v != view) {
+                            v.setBackgroundColor(Color.WHITE);         // Postavi background na sve ostale elemente white osim trenutne(na koju se kliknulo)
+                        }
+                }
             }
-            onItemClick.onItemClicked(transaction,kliknutaDvaput);
+            onItemClick.onItemClicked(transaction,kliknutaDvaput,jednak);
 
         }
 
@@ -360,7 +384,7 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         spinnerSortBy.setAdapter(sortAdapter);
     }
 
-    public String getMonth(int month) {    // Pretvaranje inta u string
+    public static String getMonth(int month) {    // Pretvaranje inta u string
         return new DateFormatSymbols().getMonths()[month-1];
     }
 

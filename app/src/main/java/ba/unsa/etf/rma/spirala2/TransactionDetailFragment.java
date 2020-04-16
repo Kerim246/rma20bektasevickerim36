@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -294,7 +295,6 @@ public class TransactionDetailFragment extends Fragment {
 
                 }
             });
-
 
         }
         return view;

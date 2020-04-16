@@ -29,7 +29,7 @@ public class TransactionModel {
         transactions.add(new Transaction(LocalDate.of(2020,5,16),60,"Dvanaeasta",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,7,11),5,"Trinaeasta",INDIVIDUALINCOME,null,0,null));
         transactions.add(new Transaction(LocalDate.of(2020,4,12),10,"Cetrnaesta",REGULARINCOME,null,11,LocalDate.of(2020,8,10)));
-        transactions.add(new Transaction(LocalDate.of(2020,3,9),11,"Petnaesta",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
+        transactions.add(new Transaction(LocalDate.of(2020,3,1),11,"Petnaesta",INDIVIDUALPAYMENT,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,4,8),13,"Sesnaesta",INDIVIDUALINCOME,null,0,null));
         transactions.add(new Transaction(LocalDate.of(2020,5,7),77,"Sedamnaesta",PURCHASE,"Ne Znam sta da kazem",0,null));
         transactions.add(new Transaction(LocalDate.of(2020,3,11),82,"Osamnaesta",INDIVIDUALINCOME,null,0,null));

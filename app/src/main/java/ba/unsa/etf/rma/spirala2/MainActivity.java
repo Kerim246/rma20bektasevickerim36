@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.time.Month;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
         }
         Fragment listFragment =
                 fragmentManager.findFragmentByTag("list");
+
         if (listFragment==null){
             listFragment = new TransactionListFragment();
             fragmentManager.beginTransaction()
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements TransactionListFr
     }
 
     @Override
-    public void onItemClicked(Transaction transaction,boolean kliknutaDvaput) {
+    public void onItemClicked(Transaction transaction,boolean kliknutaDvaput,boolean jednak) {
         Bundle arguments = new Bundle();
         arguments.putParcelable("transaction", transaction);
         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
