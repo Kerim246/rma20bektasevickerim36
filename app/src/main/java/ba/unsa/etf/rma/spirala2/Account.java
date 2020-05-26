@@ -1,9 +1,10 @@
 package ba.unsa.etf.rma.spirala2;
 
 public class Account {
-    public static int budget = 10000;
-    public static int totalLimit = 5000;
-    public static int monthLimit = 1000;
+    public static Integer id;
+    public static int budget = 1000;
+    public static int totalLimit = 1000;
+    public static int monthLimit = 100;
 
     public Account() {
     }
@@ -12,6 +13,20 @@ public class Account {
         this.budget = budget;
         this.totalLimit = totalLimit;
         this.monthLimit = monthLimit;
+    }
+    public Account(Integer id,int budget, int totalLimit, int monthLimit) {
+        this.id = id;
+        this.budget = budget;
+        this.totalLimit = totalLimit;
+        this.monthLimit = monthLimit;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public int getBudget() {

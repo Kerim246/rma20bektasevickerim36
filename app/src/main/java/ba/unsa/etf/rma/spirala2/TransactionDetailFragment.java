@@ -3,6 +3,7 @@ package ba.unsa.etf.rma.spirala2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -228,12 +229,16 @@ public class TransactionDetailFragment extends Fragment {
                                             transakcija.setEndDate(pls2);
 
                                         int i;
+                                        transakcija.setId(transaction.getId());
 
+                                        /*
                                         for(i = 0 ; i<TransactionModel.getTransactions().size() ; i++){
                                             if(TransactionModel.getTransactions().get(i).getTitle().equals(transaction.getTitle())){
                                                 TransactionModel.getTransactions().set(i,transakcija);
                                             }
-                                        }
+                                        }*/
+
+                                        new TransactionEditSync().execute(transakcija);
 
 
                                         Intent startIntent = new Intent(context, MainActivity.class);
@@ -271,6 +276,16 @@ public class TransactionDetailFragment extends Fragment {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     int i;
+
+                                    TransactionDeleteAsync transactionDeleteAsync = new TransactionDeleteAsync();
+                                    transactionDeleteAsync.execute(transaction);
+                                    if(transactionDeleteAsync.getStatus() == AsyncTask.Status.FINISHED) {
+                                        // My AsyncTask is done and onPostExecute was called
+                                        Context context = v.getContext();
+                                        Intent startIntent = new Intent(context, MainActivity.class);
+                                        context.startActivity(startIntent);
+                                    }
+                                    /*
                                     for(i = 0 ; i<TransactionModel.getTransactions().size(); i++){
                                         if(TransactionModel.getTransactions().get(i).getTitle().equals(transaction.getTitle())){
                                             TransactionModel.getTransactions().remove(i);
@@ -278,7 +293,7 @@ public class TransactionDetailFragment extends Fragment {
                                             Intent startIntent = new Intent(context, MainActivity.class);
                                             context.startActivity(startIntent);
                                         }
-                                    }
+                                    } */
                                 }
                             });
 

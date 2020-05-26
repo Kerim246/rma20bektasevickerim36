@@ -28,4 +28,10 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
     public Transaction getTransaction() {
         return transaction;
     }
+
+    @Override
+    public void Popuni(int opcija, int a, int b, int sort) {
+        new TransactionListInteractor((TransactionListInteractor.onTransactionDone)
+                this).execute(opcija,a,b,sort);
+    }
 }

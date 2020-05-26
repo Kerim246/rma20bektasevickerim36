@@ -13,12 +13,26 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import static ba.unsa.etf.rma.spirala2.Account.totalLimit;
 import static ba.unsa.etf.rma.spirala2.Transaction.Type.INDIVIDUALINCOME;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.INDIVIDUALPAYMENT;
+import static ba.unsa.etf.rma.spirala2.Transaction.Type.PURCHASE;
 import static ba.unsa.etf.rma.spirala2.Transaction.Type.REGULARINCOME;
 import static ba.unsa.etf.rma.spirala2.Transaction.Type.REGULARPAYMENT;
 
@@ -34,6 +48,9 @@ public class TransactionAddFragment extends Fragment {
     public Transaction transakcija = new Transaction();
     private Pattern regex = Pattern.compile("-?\\d+(\\.\\d+)?");
     private Pattern regexZaDatum = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+    public ITransactionListPresenter transactionListPresenter;
+    private Object TransactionAddFragment;
+
 
     private View.OnClickListener DodajTransakciju = new View.OnClickListener() {
         @Override
@@ -181,8 +198,9 @@ public class TransactionAddFragment extends Fragment {
                                 if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
                                     transakcija.setEndDate(pls2);
 
-                                TransactionModel.getTransactions().add(transakcija);
+                            //    TransactionModel.getTransactions().add(transakcija);
 
+                                new TransactionAddAsync().execute(transakcija);
 
                                 Intent startIntent = new Intent(context, MainActivity.class);
 

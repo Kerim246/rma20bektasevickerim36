@@ -44,6 +44,8 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
     public ArrayList<Transaction> finalna = new ArrayList<>();
     private ArrayList<Transaction> selektovane = new ArrayList<>();
     ConstraintLayout layout;
+    private int opcijaSort = 0;
+    private int opcija = 0;
 
     public interface OnItemClick {
         public void onItemClicked(Transaction transaction,boolean kliknutaDvaPut,boolean jednak);
@@ -55,6 +57,14 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    void funkcija(){
+        ArrayList<Transaction> t = new ArrayList<>();
+        Transaction tr = new Transaction();
+        tr.setAmount(opcijaSort);
+        t.add(tr);
+        new TransactionSortCriteria().execute(finalna,t);
     }
 
     public ITransactionListPresenter getPresenter() {
@@ -82,13 +92,12 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
             Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_list, container, false);
 
-        int repa = Account.budget;
-        int lim = Account.totalLimit;
+        new TransactionAccountAsync().execute();
 
         amount = fragmentView.findViewById(R.id.budzet);
         limit = fragmentView.findViewById(R.id.limit);
-        amount.setText(Integer.toString(repa));
-        limit.setText(Integer.toString(lim));
+        amount.setText(Integer.toString(Account.budget));
+        limit.setText(Integer.toString(Account.totalLimit));
 
         add = (Button)fragmentView.findViewById(R.id.add);
 
@@ -154,8 +163,43 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                 String opcija = spinnerFilterBy.getSelectedItem().toString();
                 String opcijaSortiranja = spinnerSortBy.getSelectedItem().toString();
                 finalna.clear();
-                TransactionListPresenter.PopuniListu(finalna,opcija,mjesec,year);
-                TransactionListPresenter.SortirajListu(finalna,opcijaSortiranja);
+        //        TransactionListPresenter.PopuniListu(finalna,opcija,mjesec,year);
+          //      TransactionListPresenter.SortirajListu(finalna,opcijaSortiranja);
+                int op = 0;
+                if(opcija.equals("INDIVIDUALPAYMENT")){
+                    op = 1;
+                }
+                if(opcija.equals("REGULARPAYMENT")){
+                    op = 2;
+                }
+                if(opcija.equals("PURCHASE")){
+                    op = 3;
+                }
+                if(opcija.equals("INDIVIDUALINCOME")){
+                    op = 4;
+                }
+                if(opcija.equals("REGULARINCOME")){
+                    op = 5;
+                }
+                if(opcija.equals("SVITIPOVI")){
+                    op = 6;
+                }
+                if (opcijaSortiranja.equals("Price - Ascending")) {
+                    opcijaSort = 1;
+                } else if (opcijaSortiranja.equals("Price - Descending")) {
+                    opcijaSort = 2;
+                } else if (opcijaSortiranja.equals("Title - Ascending")) {
+                    opcijaSort = 3;
+                } else if (opcijaSortiranja.equals("Title - Descending")) {
+                    opcijaSort = 4;
+                } else if (opcijaSortiranja.equals("Date - Ascending")) {
+                    opcijaSort = 5;
+                } else if (opcijaSortiranja.equals("Date - Descending")) {
+                    opcijaSort = 6;
+                }
+                getPresenter().Popuni(op, mjesec, year);
+                new TransactionAccountAsync().execute();
+                funkcija();
                 transactionListAdapter.notifyDataSetChanged();
                 listView.setAdapter(transactionListAdapter);
 
@@ -194,8 +238,43 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                 String opcija = spinnerFilterBy.getSelectedItem().toString();
                 String opcijaSortiranja = spinnerSortBy.getSelectedItem().toString();
                 finalna.clear();
-                TransactionListPresenter.PopuniListu(finalna,opcija,mjesec,year);
-                TransactionListPresenter.SortirajListu(finalna,opcijaSortiranja);
+                int op = 0;
+                if(opcija.equals("INDIVIDUALPAYMENT")){
+                    op = 1;
+                }
+                if(opcija.equals("REGULARPAYMENT")){
+                    op = 2;
+                }
+                if(opcija.equals("PURCHASE")){
+                    op = 3;
+                }
+                if(opcija.equals("INDIVIDUALINCOME")){
+                    op = 4;
+                }
+                if(opcija.equals("REGULARINCOME")){
+                    op = 5;
+                }
+                if(opcija.equals("SVITIPOVI")){
+                    op = 6;
+                }
+                if (opcijaSortiranja.equals("Price - Ascending")) {
+                    opcijaSort = 1;
+                } else if (opcijaSortiranja.equals("Price - Descending")) {
+                    opcijaSort = 2;
+                } else if (opcijaSortiranja.equals("Title - Ascending")) {
+                    opcijaSort = 3;
+                } else if (opcijaSortiranja.equals("Title - Descending")) {
+                    opcijaSort = 4;
+                } else if (opcijaSortiranja.equals("Date - Ascending")) {
+                    opcijaSort = 5;
+                } else if (opcijaSortiranja.equals("Date - Descending")) {
+                    opcijaSort = 6;
+                }
+           //     TransactionListPresenter.PopuniListu(finalna,opcija,mjesec,year);
+            //    TransactionListPresenter.SortirajListu(finalna,opcijaSortiranja);
+                getPresenter().Popuni(op, mjesec, year);
+                new TransactionAccountAsync().execute();
+                funkcija();
                 transactionListAdapter.notifyDataSetChanged();
                 listView.setAdapter(transactionListAdapter);
 
@@ -228,15 +307,50 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         int month = Month.valueOf(mjesecIGodina[0].toUpperCase()).getValue();
 
 
+        String opcijaFiltriranja = spinnerFilterBy.getSelectedItem().toString();
+
+
         spinnerFilterBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String opcija = parent.getItemAtPosition(position).toString(); // position == 0 -> filter by,position == 1->individualpayment
-                Toast.makeText(getContext(), "Selektovano : " + opcija, Toast.LENGTH_SHORT).show();
-                TransactionListPresenter.PopuniListu(finalna,opcija,month,Integer.parseInt(mjesecIGodina[1]));
-                transactionListAdapter.notifyDataSetChanged();
-            }
+                String opcijaa = parent.getItemAtPosition(position).toString(); // position == 0 -> filter by,position == 1->individualpayment
+                String d = datumMjesec.getText().toString();
+                String[] mjesecIGodina = d.split(",");
+                int month = Month.valueOf(mjesecIGodina[0].toUpperCase()).getValue();
+                finalna.clear();
 
+                if (parent.getItemAtPosition(position).equals("Filter by") || position == 0) {
+                    opcija = position;
+                    getPresenter().Popuni(opcija, month, Integer.parseInt(mjesecIGodina[1]));
+                } else {
+                    Toast.makeText(getContext(), "Selektovano : " + opcijaa, Toast.LENGTH_SHORT).show();
+                    //          TransactionListPresenter.PopuniListu(finalna,opcija,month,Integer.parseInt(mjesecIGodina[1]));
+                    opcija = position;
+                    String opcijaSortiranja = spinnerSortBy.getSelectedItem().toString();
+                    if (opcijaSortiranja.equals("Price - Ascending")) {
+                        opcijaSort = 1;
+                    } else if (opcijaSortiranja.equals("Price - Descending")) {
+                        opcijaSort = 2;
+                    } else if (opcijaSortiranja.equals("Title - Ascending")) {
+                        opcijaSort = 3;
+                    } else if (opcijaSortiranja.equals("Title - Descending")) {
+                        opcijaSort = 4;
+                    } else if (opcijaSortiranja.equals("Date - Ascending")) {
+                        opcijaSort = 5;
+                    } else if (opcijaSortiranja.equals("Date - Descending")) {
+                        opcijaSort = 6;
+                    }
+
+                    getPresenter().Popuni(opcija, month, Integer.parseInt(mjesecIGodina[1]));
+                    new TransactionAccountAsync().execute();
+                    int repa = Account.budget;
+                    int lim = Account.totalLimit;
+                    amount.setText(Integer.toString(repa));
+                    limit.setText(Integer.toString(lim));
+                    transactionListAdapter.notifyDataSetChanged();
+                    listView.setAdapter(transactionListAdapter);
+                }
+            }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -247,14 +361,38 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).equals("Sort by")) {
+                if (parent.getItemAtPosition(position).equals("Sort by") || position == 0) {
                     // Ne radi nista
                 } else {
                     String item = parent.getItemAtPosition(position).toString();
                     //      transakcije.clear();
                     Toast.makeText(getContext(), "Selektovano : " + item, Toast.LENGTH_SHORT).show();
+                    opcijaSort = position;
+                    String opcijaFiltriranja = spinnerFilterBy.getSelectedItem().toString();
 
-                    TransactionListPresenter.SortirajListu(finalna,item);
+                       //     TransactionListPresenter.SortirajListu(finalna,item);
+                    int op = 0;
+                    if(opcijaFiltriranja.equals("INDIVIDUALPAYMENT")){
+                        op = 1;
+                    }
+                    if(opcijaFiltriranja.equals("REGULARPAYMENT")){
+                        op = 2;
+                    }
+                    if(opcijaFiltriranja.equals("PURCHASE")){
+                        op = 3;
+                    }
+                    if(opcijaFiltriranja.equals("INDIVIDUALINCOME")){
+                        op = 4;
+                    }
+                    if(opcijaFiltriranja.equals("REGULARINCOME")){
+                        op = 5;
+                    }
+                    if(opcijaFiltriranja.equals("SVITIPOVI")){
+                        op = 6;
+                    }
+               //     finalna.clear();
+               //     getPresenter().Popuni(op, month, Integer.parseInt(mjesecIGodina[1]), opcijaSort);
+                    funkcija();
                     transactionListAdapter.notifyDataSetChanged();
                     listView.setAdapter(transactionListAdapter);
                 }
@@ -266,13 +404,15 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
             }
         });
 
-            String opcijaFiltriranja = spinnerFilterBy.getSelectedItem().toString();
+
 
 
        // finalna.clear();
 
-        TransactionListPresenter.PopuniListu(finalna,opcijaFiltriranja,month,Integer.parseInt(mjesecIGodina[1]));
-        TransactionListPresenter.SortirajListu(finalna,opcijaSortiranja);
+     //   TransactionListPresenter.PopuniListu(finalna,opcijaFiltriranja,month,Integer.parseInt(mjesecIGodina[1]));
+      //  TransactionListPresenter.SortirajListu(finalna,opcijaSortiranja);
+       // getPresenter().Popuni(opcija,month,Integer.parseInt(mjesecIGodina[1]),opcijaSort);
+
 
         transactionListAdapter=new TransactionListAdapter(getActivity(), R.layout.list_item, finalna);
         listView.setAdapter(transactionListAdapter);
@@ -386,6 +526,10 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
 
     public static String getMonth(int month) {    // Pretvaranje inta u string
         return new DateFormatSymbols().getMonths()[month-1];
+    }
+
+    public ArrayList<Transaction> getFinalna(){
+        return finalna;
     }
 
 }

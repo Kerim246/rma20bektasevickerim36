@@ -9,6 +9,8 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
     private LocalDate date;
     private int amount;
     private String title;
+    private Integer id;
+    private Integer typeid;
 
     enum Type {
         INDIVIDUALPAYMENT,REGULARPAYMENT,PURCHASE,INDIVIDUALINCOME,REGULARINCOME
@@ -72,6 +74,36 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
         this.itemDescription = itemDescription;
         this.transactionInterval = transactionInterval;
         this.endDate = endDate;
+    }
+    public Transaction(Integer id,LocalDate date, int amount, String title, Type type, String itemDescription, int transactionInterval, LocalDate endDate) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.title = title;
+        this.type = type;
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.endDate = endDate;
+    }
+
+    public Transaction(Integer id,LocalDate date, int amount, String title, Type type,Integer typeid,String itemDescription, int transactionInterval, LocalDate endDate) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.title = title;
+        this.typeid = typeid;
+        this.type = type;
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.endDate = endDate;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public LocalDate getDate() {

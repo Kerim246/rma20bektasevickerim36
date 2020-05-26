@@ -2,6 +2,7 @@ package ba.unsa.etf.rma.spirala2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,15 +53,18 @@ public class BudgetFragment extends Fragment {
             public void onClick(View v) {
                 int total_limit = Integer.parseInt(totalLimit.getText().toString());
                 int month_limit = Integer.parseInt(limit.getText().toString());
+                int budget = Integer.parseInt(budzet.getText().toString());
 
-                Account.totalLimit = total_limit;
-                Account.monthLimit = month_limit;
+                //    Account.totalLimit = total_limit;
+                //    Account.monthLimit = month_limit;
 
-                Context context = v.getContext();
-                Intent startIntent = new Intent(context, MainActivity.class);
+                new AccountUpdateAsync().execute(total_limit,month_limit,budget);
+                    Context context = v.getContext();
+                    Intent startIntent = new Intent(context, MainActivity.class);
 
-                context.startActivity(startIntent);
-            }
+                    context.startActivity(startIntent);
+                }
+
         });
 
         Bundle bundle = this.getArguments();
