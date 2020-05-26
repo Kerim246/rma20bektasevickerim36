@@ -415,6 +415,7 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                 bundle.putParcelableArrayList("transactions",finalna);
                 String []mjesec = datumMjesec.getText().toString().split(",");
                 bundle.putString("mjesec",mjesec[0]);
+                bundle.putSerializable("lista",finalna);
                 BudgetFragment fragment = new BudgetFragment();
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -430,6 +431,7 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                 String []mjesec = datumMjesec.getText().toString().split(",");
                 GraphsFragment graphsFragment = new GraphsFragment();
                 bundle.putString("mjesec",mjesec[0]);
+                bundle.putSerializable("lista",finalna);                  //Prosljedjivanje liste u graph
                 graphsFragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.transactions_list, graphsFragment);

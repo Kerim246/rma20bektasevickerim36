@@ -58,6 +58,8 @@ public class GraphsFragment extends Fragment {
          mjesec = Month.valueOf(bundle.getString("mjesec").toUpperCase()).getValue();
         String month = TransactionListFragment.getMonth(mjesec);
 
+        ArrayList<Transaction> transactions = bundle.getParcelableArrayList("lista");
+
         layout = view.findViewById(R.id.graphLayout);
         layout.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
             @Override
@@ -85,7 +87,7 @@ public class GraphsFragment extends Fragment {
 
 
 
-        ArrayList<Transaction> transactions = TransactionModel.getTransactions();
+     //   ArrayList<Transaction> transactions = TransactionModel.getTransactions();
 
         spinner = view.findViewById(R.id.spinner);
 

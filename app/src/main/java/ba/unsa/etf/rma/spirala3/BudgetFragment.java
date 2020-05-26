@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
+
 public class BudgetFragment extends Fragment {
     public TextView budzet;
     public TextView totalLimit;
@@ -63,7 +65,7 @@ public class BudgetFragment extends Fragment {
         });
 
         Bundle bundle = this.getArguments();
-//        ArrayList<Transaction> finalna = bundle.getParcelableArrayList("transactions");
+        ArrayList<Transaction> finalna = bundle.getParcelableArrayList("lista");
         String mjesec = bundle.getString("mjesec");
 
         layout = view.findViewById(R.id.budgetLayout);
@@ -76,6 +78,7 @@ public class BudgetFragment extends Fragment {
             //   bundle.putParcelableArrayList("transactions",finalna);
                 GraphsFragment fragment = new GraphsFragment();
                bundle.putString("mjesec",mjesec);
+               bundle.putSerializable("lista",finalna);
                fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.transactions_list, fragment); // give your fragment container id in first parameter
