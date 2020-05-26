@@ -187,7 +187,20 @@ public class TransactionListInteractor extends AsyncTask<Integer, Integer, Void>
                             else if((type == 1 || type == 2)) {
                                 int mjesec2 = e.getMonth().getValue();
                                 if (mjesec >= d.getMonth().getValue() && mjesec <= mjesec2) {
-                                    transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
+                                    //  transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
+                                    int br_puta = 0;
+                                    int dan;
+                                    if(mjesec == d.getMonth().getValue()) dan = d.getDayOfMonth();  // Za pocetni mjesec dan je trenutni dan u d
+                                    else dan = 1;     // Za ostale mjesec izmedju pocetka i kraja dan=1
+                                    int brDana = d.lengthOfMonth();
+                                    //   System.out.println("br dana "+brDana);
+                                    while(dan <= brDana){
+                                        dan += transactionInterval;
+                                        if(dan <= brDana)
+                                            br_puta++;
+                                    }
+                                    for(int a=0 ; a<br_puta ; a++)
+                                        transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
                                 }
                             }
                         }  else if (opcijaFiltriranja == type && mjesec == Integer.parseInt(mjesecIGodina[1]) && godina == Integer.parseInt(mjesecIGodina[0]) && (!(type == 1 || type == 2))) {
@@ -198,10 +211,20 @@ public class TransactionListInteractor extends AsyncTask<Integer, Integer, Void>
                         } else if (opcijaFiltriranja == type && (type == 1 || type == 2)) {
                             int mjesec2 = e.getMonthValue();
                             if (mjesec >= d.getMonth().getValue() && mjesec <= mjesec2) {
-                                transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
-                            }
-                            if(transactionInterval == 15){
-                                transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
+                              //  transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
+                                int br_puta = 0;
+                                int dan;
+                                if(mjesec == d.getMonth().getValue()) dan = d.getDayOfMonth();
+                                else dan = 1;
+                                int brDana = d.lengthOfMonth();
+                             //   System.out.println("br dana "+brDana);
+                                while(dan <= brDana){
+                                    dan += transactionInterval;
+                                    if(dan <= brDana)
+                                    br_puta++;
+                                }
+                                for(int a=0 ; a<br_puta ; a++)
+                                    transactions.add(new Transaction(id, d, amount, title, konvTip, itemDescription, transactionInterval, e));
                             }
 
                         }
@@ -223,19 +246,6 @@ public class TransactionListInteractor extends AsyncTask<Integer, Integer, Void>
     public interface onTransactionDone{
         public void onDone(ArrayList<Transaction> results);
     }
-    /*
-    @Override
-    public ArrayList<Transaction> get() {
-        return TransactionModel.getTransactions();
-    }
 
-    public static TransactionModel getTransactionsModel() {
-         TransactionModel transactionModel = new TransactionModel();
-        return transactionModel;
-    }
-
-    public void setTransactionModel(TransactionModel transactionModel) {
-        this.transactionModel = transactionModel;
-    } */
 }
 

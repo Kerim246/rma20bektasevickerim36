@@ -24,4 +24,5 @@
         <item>Po sedmici za trenutni mjesec</item>
         <item>Po danu za trenutni mjesec</item>
     </string-array>
+    <string name = "api_id">e2787b43-9b9b-4e23-9629-65b08770b738</string>
 </resources>

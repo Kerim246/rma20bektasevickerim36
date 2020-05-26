@@ -3,7 +3,7 @@ package ba.unsa.etf.rma.spirala3;
 public class Account {
     public static Integer id;
     public static int budget = 1000;
-    public static int totalLimit = 1000;
+    public static int totalLimit = 100;
     public static int monthLimit = 100;
 
     public Account() {
