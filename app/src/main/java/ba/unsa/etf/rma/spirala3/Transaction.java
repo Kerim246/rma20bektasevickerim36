@@ -19,6 +19,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
     private String itemDescription;
     private int transactionInterval;
     private LocalDate endDate;
+    private Integer internalId;
 
     protected Transaction(Parcel in) {
         date = (LocalDate)in.readSerializable();
@@ -28,6 +29,16 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
         itemDescription = in.readString();
         transactionInterval = in.readInt();
         endDate = (LocalDate)in.readSerializable();
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            internalId = null;
+        } else {
+            internalId = in.readInt();
+        }
     }
 
     public static final Parcelable.Creator<Transaction> CREATOR = new Creator<Transaction>() {
@@ -56,6 +67,18 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
         dest.writeString(itemDescription);
         dest.writeInt(transactionInterval);
         dest.writeSerializable(endDate);
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        if (internalId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(internalId);
+        }
     }
 
     @Override
@@ -96,6 +119,29 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
         this.itemDescription = itemDescription;
         this.transactionInterval = transactionInterval;
         this.endDate = endDate;
+    }
+
+    public Transaction(String date, int amount, String title, Integer id, String type, String itemDescription, int transactionInterval, String endDate, Integer internalId) {
+        this.date = LocalDate.parse(date);
+        this.amount = amount;
+        this.title = title;
+        this.id = id;
+        this.type = Transaction.Type.valueOf(type);
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.endDate = LocalDate.parse(endDate);
+        this.internalId = internalId;
+    }
+
+    public Transaction(String date, int amount, String title, Integer id, String type, String itemDescription, int transactionInterval, Integer internalId) {
+        this.date = LocalDate.parse(date);
+        this.amount = amount;
+        this.title = title;
+        this.id = id;
+        this.type = Transaction.Type.valueOf(type);
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.internalId = internalId;
     }
 
     public Integer getId() {

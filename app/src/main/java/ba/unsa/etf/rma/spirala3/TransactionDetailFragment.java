@@ -1,25 +1,38 @@
 package ba.unsa.etf.rma.spirala3;
 
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import static ba.unsa.etf.rma.spirala3.Account.totalLimit;
+import static ba.unsa.etf.rma.spirala3.ConnectivityBroadcastReceiver.IS_NETWORK_AVAILABLE;
 import static ba.unsa.etf.rma.spirala3.Transaction.Type.INDIVIDUALINCOME;
 import static ba.unsa.etf.rma.spirala3.Transaction.Type.REGULARINCOME;
 import static ba.unsa.etf.rma.spirala3.Transaction.Type.REGULARPAYMENT;
@@ -37,10 +50,13 @@ public class TransactionDetailFragment extends Fragment {
     public Button delete;
     public Button save;
     public ImageView icon;
+    public TextView rezim;
     public Transaction transaction = new Transaction();
     public Transaction transakcija = new Transaction();
     private Pattern regex = Pattern.compile("-?\\d+(\\.\\d+)?");
     private Pattern regexZaDatum = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+    public boolean konektovan = false;
+    private boolean konekcija = false;
 
     public ITransactionDetailPresenter getPresenter() {
         if (presenter == null) {
@@ -49,7 +65,6 @@ public class TransactionDetailFragment extends Fragment {
         return presenter;
     }
 
-
     @Override
     public View onCreateView(
             LayoutInflater inflater,
@@ -57,8 +72,8 @@ public class TransactionDetailFragment extends Fragment {
             Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        if (getArguments() != null && getArguments().containsKey("transaction")) {
-            getPresenter().setTransaction(getArguments().getParcelable("transaction"));
+//        if (getArguments() != null && getArguments().containsKey("transaction")) {
+     //       getPresenter().setTransaction(getArguments().getParcelable("transaction"));
             title = view.findViewById(R.id.title);
             date = view.findViewById(R.id.date);
             amount = view.findViewById(R.id.budzet);
@@ -68,8 +83,22 @@ public class TransactionDetailFragment extends Fragment {
             endDate = view.findViewById(R.id.endDate);
             delete = view.findViewById(R.id.delete);
             edit = view.findViewById(R.id.edit);
+            rezim = view.findViewById(R.id.rezim);
+
+
+            if (getArguments() != null && getArguments().containsKey("id")) {
+                int id = getArguments().getInt("id");
+                getPresenter().searchTransaction(String.valueOf(id));
+            }
+            if (getArguments() != null && getArguments().containsKey("internal_id")) {
+                int id = getArguments().getInt("internal_id");
+                getPresenter().getDatabaseTransaction(id);
+            }
+
+
 
             transaction = getPresenter().getTransaction();
+
 
             title.setText(transaction.getTitle());
             date.setText(transaction.getDate().toString());
@@ -81,6 +110,43 @@ public class TransactionDetailFragment extends Fragment {
             endDate.setText(transaction.getEndDate().toString());
 
          //   edit.setOnClickListener(edit_transaction);
+
+            Bundle bundle = this.getArguments();
+            boolean konekcija = bundle.getBoolean("konekcija");
+            System.out.println("KONEKCIJA JE "+konekcija);
+            if(konekcija == false){
+                rezim.setText("offline izmjena");
+            }
+            else {
+                rezim.setText("");
+            }
+
+/*
+            IntentFilter intentFilter = new IntentFilter(ConnectivityBroadcastReceiver.NETWORK_AVAILABLE_ACTION);
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                    konekcija = false;
+
+                    if (cm.getActiveNetworkInfo() == null) {
+                        Toast toast = Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT);
+                        konekcija = false;
+                        toast.show();
+                    }
+                    else {
+                        Toast toast = Toast.makeText(context, "Connected", Toast.LENGTH_SHORT);
+                        konekcija = true;
+                        toast.show();
+                    }
+                    if(konekcija == false){
+                        rezim.setText("Offline izmjena");
+                    }
+                    else rezim.setText("");
+                    System.out.println("konekcija "+konekcija);
+                }
+            }, intentFilter);
+*/
 
             save = view.findViewById(R.id.save);
 
@@ -100,7 +166,6 @@ public class TransactionDetailFragment extends Fragment {
 
                     int money = Account.budget;
                     int limit = Account.monthLimit;
-
 
                     int vel = naslov.length();
 
@@ -192,13 +257,12 @@ public class TransactionDetailFragment extends Fragment {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        if((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))){
+                                        if ((noviTip.equals("REGULARINCOME") || noviTip.equals("INDIVIDUALINCOME"))) {
                                             int vr = money;
                                             int pom = Integer.parseInt(vrijednost) - transaction.getAmount();  // Da dodaje onoliko za koliko se povecalo
                                             vr += pom;
                                             Account.budget = vr;
-                                        }
-                                        else {
+                                        } else {
                                             int vr = money;
                                             int pom = Integer.parseInt(vrijednost) - transaction.getAmount();  // Odbija od racuna za onoliko koliko se promijenilo
                                             vr -= pom;
@@ -218,7 +282,7 @@ public class TransactionDetailFragment extends Fragment {
                                         transakcija.setType(t);
                                         if (!(t.equals(REGULARINCOME) || t.equals(INDIVIDUALINCOME)))
                                             transakcija.setItemDescription(description);
-                                        if(t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
+                                        if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
                                             transakcija.setTransactionInterval(Integer.parseInt(transaction_interval));
 
                                         LocalDate pls2 = null;
@@ -229,13 +293,38 @@ public class TransactionDetailFragment extends Fragment {
 
                                         transakcija.setId(transaction.getId());
 
+                                        if (konekcija == true)
+                                            new TransactionEditSync().execute(transakcija);
 
-                                        new TransactionEditSync().execute(transakcija);
+                                        else {
+                                            ContentResolver cr = context.getApplicationContext().getContentResolver();
+                                            Uri transactionsURI = Uri.parse("content://rma.provider.transactions/elements");
 
+                                            ContentValues values = new ContentValues();
 
-                                        Intent startIntent = new Intent(context, MainActivity.class);
+                                            values.put(TransactionDBOpenHelper.TRANSACTION_ID, transakcija.getId());
+                                            values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transakcija.getTitle());
+                                            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, transakcija.getDate().toString());
+                                            values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transakcija.getAmount());
+                                            values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transakcija.getType().toString());
+                                            if (!(t.equals(REGULARINCOME) || t.equals(INDIVIDUALINCOME)))
+                                                values.put(TransactionDBOpenHelper.TRANSACTION_ITEMDESCRIPTION, transakcija.getItemDescription());
+                                            if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
+                                                values.put(TransactionDBOpenHelper.TRANSACTION_TRANSACTIONINTERVAL, transakcija.getTransactionInterval());
+                                            if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
+                                                values.put(TransactionDBOpenHelper.TRANSACTION_ENDDATE, transakcija.getEndDate().toString());
 
-                                        context.startActivity(startIntent);
+                                            //            System.out.println("transactionID "+id);
+
+                                            String where = TransactionDBOpenHelper.TRANSACTION_ID + "=" + transakcija.getId();
+
+                                            cr.update(transactionsURI, values, where,
+                                                    null);
+
+                                            Intent startIntent = new Intent(context, MainActivity.class);
+
+                                            context.startActivity(startIntent);
+                                        }
                                     }
                                 });
 
@@ -269,7 +358,20 @@ public class TransactionDetailFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int id) {
                                     int i;
 
+                                    if(konekcija == true)
                                     new TransactionDeleteAsync().execute(transaction);
+                                    else {
+
+                                        ContentResolver cr = context.getApplicationContext().getContentResolver();
+                                        Uri transactionsURI = Uri.parse("content://rma.provider.transactions/elements");
+
+                                        String where = TransactionDBOpenHelper.TRANSACTION_ID + "=" + transaction.getId();
+
+                                        TransactionIDCounter.id--;
+
+                                        cr.delete(transactionsURI,where,null);
+                                    }
+
 
                                     Context context = v.getContext();
                                     Intent startIntent = new Intent(context, MainActivity.class);
@@ -291,7 +393,7 @@ public class TransactionDetailFragment extends Fragment {
                 }
             });
 
-        }
+
         return view;
     }
 

@@ -1,7 +1,15 @@
 package ba.unsa.etf.rma.spirala3;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,12 +26,19 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormatSymbols;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+import static ba.unsa.etf.rma.spirala3.ConnectivityBroadcastReceiver.IS_NETWORK_AVAILABLE;
 
 public class TransactionListFragment extends Fragment implements ITransactionListView{
     private TransactionListAdapter transactionListAdapter;
@@ -44,12 +59,24 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
     ConstraintLayout layout;
     private int opcijaSort = 0;
     private int opcija = 0;
+    private TransactionListCursorAdapter transactionListCursorAdapter;
+    private boolean konekcija = false;
+    private ConnectivityBroadcastReceiver receiver = new ConnectivityBroadcastReceiver();
+    private IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+    private int optionn = 0,mont = 0,yea = 0;
+    private  int abc = 0;
+
 
     public interface OnItemClick {
-        public void onItemClicked(Transaction transaction,boolean kliknutaDvaPut,boolean jednak);
+        public void onItemClicked(Boolean inDatabase, int id);
     }
 
     private OnItemClick onItemClick;
+    private OnItemClick onItemClick1;
+
+    public interface OnItemClick1 {
+        public void onItemKlicked(Boolean inDatabase, int id);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,12 +103,44 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         @Override
         public void onClick(View v) {
             Fragment Fragment = new TransactionListFragment();
+            boolean conn = provjeraKonekcije();
+            TransactionAddFragment transactionAddFragment = new TransactionAddFragment();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("konekcija",conn);
+            transactionAddFragment.setArguments(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.transactions_list, new TransactionAddFragment()); // give your fragment container id in first parameter
+            transaction.replace(R.id.transactions_list, transactionAddFragment); // give your fragment container id in first parameter
             transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
             transaction.commit();
         }
     };
+
+    private boolean provjeraKonekcije(){
+        IntentFilter intentFilter = new IntentFilter(ConnectivityBroadcastReceiver.NETWORK_AVAILABLE_ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                konekcija = false;
+
+                if (cm.getActiveNetworkInfo() == null) {
+                    Toast toast = Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT);
+                    konekcija = false;
+                    transactionListCursorAdapter = new TransactionListCursorAdapter(getActivity(),R.layout.list_item,null,false);
+                    listView.setAdapter(transactionListCursorAdapter);
+                    toast.show();
+                }
+                else {
+                    Toast toast = Toast.makeText(context, "Connected", Toast.LENGTH_SHORT);
+                    listView.setAdapter(transactionListAdapter);
+                    konekcija = true;
+                    toast.show();
+                }
+            //    System.out.println("konekcija "+konekcija);
+            }
+        }, intentFilter);
+        return konekcija;
+    }
 
     @Override
     public View onCreateView(
@@ -100,7 +159,8 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         add = (Button)fragmentView.findViewById(R.id.add);
 
         listView= fragmentView.findViewById(R.id.listView);
-        listView.setOnItemClickListener(listItemClickListener);
+   //     listView.setOnItemClickListener(listItemClickListener);
+       listView.setOnItemClickListener(listCursorItemClickListener);
 
         listView.setOnTouchListener(new ListView.OnTouchListener() {   // da se moze scrollati listview unutar scroll viewa
             @Override
@@ -195,8 +255,16 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                 } else if (opcijaSortiranja.equals("Date - Descending")) {
                     opcijaSort = 6;
                 }
-                getPresenter().Popuni(op, mjesec, year);
-                new TransactionAccountAsync().execute();
+                optionn = op;
+                mont = mjesec;
+                yea = year;
+                if(provjeraKonekcije()) {
+                    getPresenter().Popuni(op, mjesec, year);
+                    new TransactionAccountAsync().execute();
+                }
+                else {
+
+                }
                 funkcija();
                 transactionListAdapter.notifyDataSetChanged();
                 listView.setAdapter(transactionListAdapter);
@@ -268,7 +336,9 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                 } else if (opcijaSortiranja.equals("Date - Descending")) {
                     opcijaSort = 6;
                 }
-
+                optionn = op;
+                mont = mjesec;
+                yea = year;
                 getPresenter().Popuni(op, mjesec, year);
                 new TransactionAccountAsync().execute();
                 funkcija();
@@ -318,6 +388,9 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
 
                 if (parent.getItemAtPosition(position).equals("Filter by") || position == 0) {
                     opcija = position;
+                    optionn = opcija;
+                    mont = month;
+                    yea = Integer.parseInt(mjesecIGodina[1]);
                     getPresenter().Popuni(opcija, month, Integer.parseInt(mjesecIGodina[1]));
                 } else {
                     Toast.makeText(getContext(), "Selektovano : " + opcijaa, Toast.LENGTH_SHORT).show();
@@ -337,7 +410,9 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                     } else if (opcijaSortiranja.equals("Date - Descending")) {
                         opcijaSort = 6;
                     }
-
+                    optionn = opcija;
+                    mont = month;
+                    yea = Integer.parseInt(mjesecIGodina[1]);
                     getPresenter().Popuni(opcija, month, Integer.parseInt(mjesecIGodina[1]));
                     new TransactionAccountAsync().execute();
                     int repa = Account.budget;
@@ -401,10 +476,6 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
         });
 
 
-        transactionListAdapter=new TransactionListAdapter(getActivity(), R.layout.list_item, finalna);
-        listView.setAdapter(transactionListAdapter);
-
-
         layout = fragmentView.findViewById(R.id.constraintLayout);
         layout.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
             @Override
@@ -440,20 +511,74 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
             }
         });
 
+/*
+        IntentFilter intentFilter = new IntentFilter(ConnectivityBroadcastReceiver.NETWORK_AVAILABLE_ACTION);
+        //  System.out.println("QWERR");
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
+                String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
+                if(networkStatus.equals("connected")) konekcija = true;
+                else konekcija = false;
+
+                transactionListAdapter=new TransactionListAdapter(getActivity(), R.layout.list_item, finalna);
+                transactionListCursorAdapter = new TransactionListCursorAdapter(getActivity(),R.layout.list_item,null,false);
+                getPresenter().getTransactionsCursor();
+                if(konekcija == true) {
+                    listView.setAdapter(transactionListAdapter);
+                }
+                if(konekcija == false){
+                    transactionListCursorAdapter = new TransactionListCursorAdapter(getActivity(),R.layout.list_item,null,false);
+                    listView.setAdapter(transactionListCursorAdapter);
+                }
+            }
+        }, intentFilter);
+*/
+      //  transactionListAdapter=new TransactionListAdapter(getActivity(), R.layout.list_item, finalna);
+      //  listView.setAdapter(transactionListAdapter);
+
+        IntentFilter intentFilter = new IntentFilter(ConnectivityBroadcastReceiver.NETWORK_AVAILABLE_ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                konekcija = false;
+                PopuniZaPrebacivanje();
+                transactionListAdapter=new TransactionListAdapter(getActivity(), R.layout.list_item, finalna);
+                transactionListCursorAdapter = new TransactionListCursorAdapter(getActivity(),R.layout.list_item,null,false);
+                getPresenter().getTransactionsCursor();
+
+                if (cm.getActiveNetworkInfo() == null) {
+                    Toast toast = Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT);
+                    listView.setAdapter(transactionListCursorAdapter);
+                    toast.show();
+                }
+                else {
+                    Toast toast = Toast.makeText(context, "Connected", Toast.LENGTH_SHORT);
+                    listView.setAdapter(transactionListAdapter);
+                    toast.show();
+                }
+              //  System.out.println("konekcija "+konekcija);
+            }
+        }, intentFilter);
+
 
         return fragmentView;
     }
 
+
     @Override
     public void setTransactions(ArrayList<Transaction> transactions) {
         transactionListAdapter.setTransactions(transactions);
+     //   listView.setOnItemClickListener(listItemClickListener);
     }
 
     @Override
     public void notifyTransactionListDataSetChanged() {
         transactionListAdapter.notifyDataSetChanged();
     }
-
+/*
     private AdapterView.OnItemClickListener listItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -487,10 +612,21 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
                         }
                 }
             }
-            onItemClick.onItemClicked(transaction,kliknutaDvaput,jednak);
+            onItemClick.onItemClicked(false,transaction.getId());
 
         }
 
+    };
+*/
+    private AdapterView.OnItemClickListener listCursorItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+
+            if(cursor != null) {
+                onItemClick.onItemClicked(true, cursor.getInt(cursor.getColumnIndex(TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID)));
+            }
+        }
     };
 
 
@@ -519,6 +655,23 @@ public class TransactionListFragment extends Fragment implements ITransactionLis
 
     public ArrayList<Transaction> getFinalna(){
         return finalna;
+    }
+
+    @Override
+    public void setCursor(Cursor cursor) {
+        listView.setAdapter(transactionListCursorAdapter);
+        listView.setOnItemClickListener(listCursorItemClickListener);
+        transactionListCursorAdapter.changeCursor(cursor);
+    }
+
+    public void PopuniZaPrebacivanje(){
+        finalna.clear();
+        getPresenter().Popuni(optionn, mont, yea);
+    }
+
+    public void PopuniListuSaBaze(int a,int b,int c){
+        transactionListCursorAdapter = new TransactionListCursorAdapter(getActivity(),R.layout.list_item,null,false);
+        listView.setAdapter(transactionListCursorAdapter);
     }
 
 }

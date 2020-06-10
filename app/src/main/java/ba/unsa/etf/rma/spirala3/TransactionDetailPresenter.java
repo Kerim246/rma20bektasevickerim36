@@ -1,6 +1,8 @@
 package ba.unsa.etf.rma.spirala3;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.os.Parcelable;
 
 import java.time.LocalDate;
@@ -9,9 +11,11 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
 
     private Transaction transaction;
     private Context context;
+    private TransactionDetailInteractor interactor;
 
     public TransactionDetailPresenter(Context context) {
         this.context = context;
+        interactor = new TransactionDetailInteractor();
     }
 
     @Override
@@ -34,4 +38,16 @@ public class TransactionDetailPresenter implements ITransactionDetailPresenter {
         new TransactionListInteractor((TransactionListInteractor.onTransactionDone)
                 this).execute(opcija,a,b,sort);
     }
+    @Override
+    public void searchTransaction(String query) {
+        new TransactionDetailInteractor((TransactionListInteractor.onTransactionDone)this).execute(query);
+    }
+
+    @Override
+    public void getDatabaseTransaction(int id) {
+        transaction = interactor.getTransaction(context,id);
+    }
+
+
+
 }

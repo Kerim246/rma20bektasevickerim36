@@ -9,5 +9,7 @@ public interface ITransactionDetailPresenter {
     void setTransaction(Parcelable transaction);
     Transaction getTransaction();
     public void Popuni(int opcija,int a,int b,int sort);
+    void getDatabaseTransaction(int id);
+    void searchTransaction(String query);
 
 }

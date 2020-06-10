@@ -1,8 +1,12 @@
 package ba.unsa.etf.rma.spirala3;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +40,43 @@ public class TransactionAddFragment extends Fragment {
     private Pattern regexZaDatum = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
     public ITransactionListPresenter transactionListPresenter;
     private Object TransactionAddFragment;
+    private boolean konek = false;
+    public TextView rezim;
+    private static int id = 0;
 
+
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_add, container, false);
+
+        title = view.findViewById(R.id.title);
+        date = view.findViewById(R.id.date);
+        amount = view.findViewById(R.id.budzet);
+        type = view.findViewById(R.id.type);
+        itemDescription = view.findViewById(R.id.itemDescription);
+        transactionInterval = view.findViewById(R.id.transactionInterval);
+        endDate = view.findViewById(R.id.endDate);
+        add = view.findViewById(R.id.DodajTransakciju);
+        rezim = view.findViewById(R.id.rezim);
+
+        Bundle bundle = this.getArguments();
+
+        konek = bundle.getBoolean("konekcija");
+
+        if(konek == false) rezim.setText("Offline dodavanje");
+
+
+
+        add.setOnClickListener(DodajTransakciju);
+
+
+
+        return view;
+    }
 
     private View.OnClickListener DodajTransakciju = new View.OnClickListener() {
         @Override
@@ -184,9 +224,35 @@ public class TransactionAddFragment extends Fragment {
                                 if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
                                     transakcija.setEndDate(pls2);
 
-                            //    TransactionModel.getTransactions().add(transakcija);
+                                //    TransactionModel.getTransactions().add(transakcija);
 
-                                new TransactionAddAsync().execute(transakcija);
+                                if(konek == true)
+                                    new TransactionAddAsync().execute(transakcija);
+                                else {
+
+                                    ContentResolver cr = context.getApplicationContext().getContentResolver();
+                                    Uri transactionsURI = Uri.parse("content://rma.provider.transactions/elements");
+
+                                    ContentValues values = new ContentValues();
+
+                                    values.put(TransactionDBOpenHelper.TRANSACTION_ID, TransactionIDCounter.id);
+                                    values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transakcija.getTitle());
+                                    values.put(TransactionDBOpenHelper.TRANSACTION_DATE, transakcija.getDate().toString());
+                                    values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transakcija.getAmount());
+                                    values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transakcija.getType().toString());
+                                    if (!(t.equals(REGULARINCOME) || t.equals(INDIVIDUALINCOME)))
+                                        values.put(TransactionDBOpenHelper.TRANSACTION_ITEMDESCRIPTION, transakcija.getItemDescription());
+                                    if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
+                                        values.put(TransactionDBOpenHelper.TRANSACTION_TRANSACTIONINTERVAL, transakcija.getTransactionInterval());
+                                    if (t.equals(REGULARINCOME) || t.equals(REGULARPAYMENT))
+                                        values.put(TransactionDBOpenHelper.TRANSACTION_ENDDATE, transakcija.getEndDate().toString());
+
+
+                        //            System.out.println("transactionID "+id);
+                                    cr.insert(transactionsURI, values);
+                                    TransactionIDCounter.id++;
+                                }
+
 
                                 Intent startIntent = new Intent(context, MainActivity.class);
 
@@ -210,28 +276,6 @@ public class TransactionAddFragment extends Fragment {
         }
     };
 
-    @Override
-    public View onCreateView(
-            LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_add, container, false);
-
-        title = view.findViewById(R.id.title);
-        date = view.findViewById(R.id.date);
-        amount = view.findViewById(R.id.budzet);
-        type = view.findViewById(R.id.type);
-        itemDescription = view.findViewById(R.id.itemDescription);
-        transactionInterval = view.findViewById(R.id.transactionInterval);
-        endDate = view.findViewById(R.id.endDate);
-        add = view.findViewById(R.id.DodajTransakciju);
-
-        add.setOnClickListener(DodajTransakciju);
-
-        return view;
-    }
-
     public Transaction.Type konverzija(String vr) {
 
         Transaction.Type konvTip = Transaction.Type.valueOf(vr);
@@ -244,6 +288,10 @@ public class TransactionAddFragment extends Fragment {
             return false;
         }
         return regex.matcher(strNum).matches();
+    }
+
+    public void setAjdi(int AJDI){
+        id = AJDI;
     }
 
 }

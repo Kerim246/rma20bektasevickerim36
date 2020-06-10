@@ -1,6 +1,11 @@
 package ba.unsa.etf.rma.spirala3;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.SurfaceControl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +35,8 @@ public class TransactionListInteractor extends AsyncTask<Integer, Integer, Void>
         transactions = new ArrayList<Transaction>();
     };
 
+    public TransactionListInteractor() {
+    }
 
     @Override
     protected void onPostExecute(Void aVoid){
@@ -246,6 +253,29 @@ public class TransactionListInteractor extends AsyncTask<Integer, Integer, Void>
     public interface onTransactionDone{
         public void onDone(ArrayList<Transaction> results);
     }
+
+    @Override
+    public Cursor getTransactionCursor(Context context) {
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        String[] kolone = new String[]{
+                TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID,
+                TransactionDBOpenHelper.TRANSACTION_ID,
+                TransactionDBOpenHelper.TRANSACTION_DATE,
+                TransactionDBOpenHelper.TRANSACTION_TITLE,
+                TransactionDBOpenHelper.TRANSACTION_AMOUNT,
+                TransactionDBOpenHelper.TRANSACTION_TYPE,
+                TransactionDBOpenHelper.TRANSACTION_ITEMDESCRIPTION,
+                TransactionDBOpenHelper.TRANSACTION_TRANSACTIONINTERVAL,
+                TransactionDBOpenHelper.TRANSACTION_ENDDATE
+        };
+        Uri adresa = Uri.parse("content://rma.provider.transactions/elements");
+        String where = null;
+        String whereArgs[] = null;
+        String order = null;
+        Cursor cur = cr.query(adresa,kolone,where,whereArgs,order);
+        return cur;
+    }
+
 
 }
 

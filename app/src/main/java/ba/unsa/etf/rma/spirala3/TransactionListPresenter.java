@@ -41,8 +41,13 @@ public class TransactionListPresenter implements ITransactionListPresenter,Trans
 
     public TransactionListPresenter(ITransactionListView view, Context context) {
         this.view = view;
-      //  this.interactor = new TransactionListInteractor();
+        this.interactor = new TransactionListInteractor();
         this.context = context;
+    }
+
+    @Override
+    public void getTransactionsCursor(){
+        view.setCursor(interactor.getTransactionCursor(context.getApplicationContext()));
     }
 
     /*
